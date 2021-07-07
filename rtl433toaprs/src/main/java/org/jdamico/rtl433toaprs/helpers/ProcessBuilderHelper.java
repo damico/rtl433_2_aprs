@@ -111,7 +111,7 @@ public class ProcessBuilderHelper {
 					+"p"+String.format("%03d" , entity.getRainIn().intValue())
 					+"P..."
 					+"b..."
-					+"h"+String.format("%03d" , entity.getHumidity().intValue()));
+					+"h"+String.format("%02d" , entity.getHumidity().intValue()));
 
 
 			sendPacket(complete_weather_data, soundcardName);
@@ -194,8 +194,7 @@ public class ProcessBuilderHelper {
 
 	public static String toString(double latitude, double longitude) {
 		char symbolTable = '/';
-		char symbolCode = '.';
-		return getDMS(latitude,true)+symbolTable+getDMS(longitude,false)+symbolCode;
+		return getDMS(latitude,true)+symbolTable+getDMS(longitude,false);
 	}
 
 }
