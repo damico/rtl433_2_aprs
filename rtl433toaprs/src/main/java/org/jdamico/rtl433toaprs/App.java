@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.jdamico.javax25.soundcard.Soundcard;
+
 import com.google.gson.Gson;
 
 
@@ -24,90 +26,26 @@ import com.google.gson.Gson;
 public class App 
 {
 	public static void main( String[] args ){
-		String helpInfo = "Usage parameters: json_file_path callsign decimal_lat decimal_lng timezone";
+
+
+
+
+
+		String helpInfo = "Usage parameters: callsign decimal_lat decimal_lng timezone";
 		if(args.length != 5) {
 			System.err.println("Incorrect usage. "+helpInfo);
 		}else {
-			String jsonFilePath = args[0];
-			File jsonFile = new File(jsonFilePath);
+
 			try {
-
-
-				String jsonStr = Helpers.getInstance().readTextFileToString(jsonFile);
-				jsonStr = jsonStr.split("\\}")[0]+"}";
-				Gson gson = new Gson();
-				WeatherStationDataEntity entity = gson.fromJson(jsonStr, WeatherStationDataEntity.class);
-				entity = entity.toImperial();
-
-
-				Date now = new Date();
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(now);
-
-				double latitude = Double.parseDouble(args[2]);
-				double longitude = Double.parseDouble(args[3]);
-				int tz = Integer.parseInt(args[4]);
-				
-
-				System.out.println(
-						"@"+String.format("%02d" , cal.get(Calendar.DAY_OF_MONTH))
-						+(cal.get(Calendar.HOUR_OF_DAY)-tz)
-						+cal.get(Calendar.MINUTE)
-						+"z"+toString(latitude, longitude)
-						+"_"+entity.getWindDirDeg()
-						+"/"+String.format("%03d" , entity.getWindAvgMH().intValue())
-						+"g"+String.format("%03d" , entity.getWindMaxMH().intValue())
-						+"t"+String.format("%03d" , entity.getTemperatureF().intValue())
-						+"r..."
-						+"p"+String.format("%03d" , entity.getRainIn().intValue())
-						+"P..."
-						+"b..."
-						+"h"+String.format("%03d" , entity.getHumidity().intValue()));
-
+				Soundcard.enumerate();
+				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(args[0], args[1], args[2], args[3], args[4]);
+				processBuilderHelper.caller();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public static String getDMS(double decimalDegree, boolean isLatitude) {
-		
-		Integer positionAmbiguity = 0;
-		
-		
-		int minFrac = (int)Math.round(decimalDegree*6000); ///< degree in 1/100s of a minute
-		boolean negative = (minFrac < 0);
-		if (negative)
-			minFrac = -minFrac;
-		int deg = minFrac / 6000;
-		int min = (minFrac / 100) % 60;
-		minFrac = minFrac % 100;
-		String ambiguousFrac;
 
-		switch (positionAmbiguity) {
-		case 1: // "dd  .  N"
-			ambiguousFrac = "  .  "; break;
-		case 2: // "ddm .  N"
-			ambiguousFrac = String.format("%d .  ", min/10); break;
-		case 3: // "ddmm.  N"
-			ambiguousFrac = String.format("%02d.  ", min); break;
-		case 4: // "ddmm.f N"
-			ambiguousFrac = String.format("%02d.%d ", min, minFrac/10); break;
-		default: // "ddmm.ffN"
-			ambiguousFrac = String.format("%02d.%02d", min, minFrac); break;
-		}
-		if ( isLatitude ) {
-			return String.format("%02d%s%s", deg, ambiguousFrac, ( negative ? "S" : "N"));
-		} else {
-			return String.format("%03d%s%s", deg, ambiguousFrac, ( negative ? "W" : "E"));
-		}
-	}
-
-	public static String toString(double latitude, double longitude) {
-		char symbolTable = '/';
-		char symbolCode = '.';
-		return getDMS(latitude,true)+symbolTable+getDMS(longitude,false)+symbolCode;
-	}
 
 }

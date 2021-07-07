@@ -1,6 +1,8 @@
 package org.jdamico.rtl433toaprs;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,4 +40,35 @@ public class Helpers {
 		return output.toString();
 	}
 
+	public void writeStrToFile(String str, String fileName) throws Exception{
+
+		FileWriter fw = null;
+		BufferedWriter out = null;
+		try {
+			fw = new FileWriter(fileName);
+			out = new BufferedWriter(fw);
+			out.write(str);  
+		}
+		catch (IOException e)
+		{
+			throw new Exception(e);
+
+		}
+		finally
+		{
+			if(out != null)
+				try {
+					out.close();
+				} catch (IOException e) {
+					throw new Exception(e);
+				}
+			if(fw != null)
+				try {
+					fw.close();
+				} catch (IOException e) {
+					throw new Exception(e);
+				}
+		}	
+	}
+	
 }
