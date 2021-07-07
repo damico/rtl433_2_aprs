@@ -1,4 +1,4 @@
-package org.jdamico.rtl433toaprs;
+package org.jdamico.rtl433toaprs.helpers;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,12 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class Helpers {
+public class IOHelper {
 	
-	private static Helpers INSTANCE = null;
-	private Helpers(){}
-	public static Helpers getInstance(){
-		if(null == INSTANCE) INSTANCE = new Helpers();
+	private static IOHelper INSTANCE = null;
+	private IOHelper(){}
+	public static IOHelper getInstance(){
+		if(null == INSTANCE) INSTANCE = new IOHelper();
 		return INSTANCE;
 	}
 	

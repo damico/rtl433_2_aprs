@@ -1,4 +1,4 @@
-package org.jdamico.rtl433toaprs;
+package org.jdamico.rtl433toaprs.helpers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +15,8 @@ import org.jdamico.javax25.ax25.Packet;
 import org.jdamico.javax25.ax25.PacketDemodulator;
 import org.jdamico.javax25.radiocontrol.TransmitController;
 import org.jdamico.javax25.soundcard.Soundcard;
+import org.jdamico.rtl433toaprs.entities.RainEntity;
+import org.jdamico.rtl433toaprs.entities.WeatherStationDataEntity;
 
 import com.google.gson.Gson;
 
@@ -71,11 +73,11 @@ public class ProcessBuilderHelper {
 		File rainJson = new File(rainJsonFilePath);
 		RainEntity rainEntity = null;
 		if(rainJson != null && rainJson.exists() && rainJson.isFile()) {
-			String rainJsonStr = Helpers.getInstance().readTextFileToString(rainJson);
+			String rainJsonStr = IOHelper.getInstance().readTextFileToString(rainJson);
 			rainEntity = gson.fromJson(rainJsonStr, RainEntity.class);
 		}else{
 			rainEntity = new RainEntity(entity.getRainMm());
-			Helpers.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+			IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 		}
 		double rainMM = entity.getRainMm()-rainEntity.getInitialRain();
 		entity.setRainMm(rainMM);		
@@ -120,7 +122,7 @@ public class ProcessBuilderHelper {
 				minutes = 0;
 				if(rainMM > 0) {
 					rainEntity.setInitialRain(rainEntity.getInitialRain()+rainMM);
-					Helpers.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+					IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 				}
 			}
 		}

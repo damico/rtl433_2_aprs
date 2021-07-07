@@ -1,4 +1,4 @@
-package org.jdamico.rtl433toaprs;
+package org.jdamico.rtl433toaprs.entities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

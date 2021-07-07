@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.jdamico.javax25.soundcard.Soundcard;
+import org.jdamico.rtl433toaprs.helpers.ProcessBuilderHelper;
 
 import com.google.gson.Gson;
 
@@ -31,7 +32,7 @@ public class App
 
 
 
-		String helpInfo = "Usage parameters: callsign decimal_lat decimal_lng timezone";
+		String helpInfo = "Usage parameters: callsign decimal_lat decimal_lng timezone \"soundcard name\"";
 		if(args.length != 5) {
 			System.err.println("Incorrect usage. "+helpInfo);
 		}else {
