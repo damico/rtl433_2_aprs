@@ -171,7 +171,7 @@ public class WeatherStationDataEntity {
 	public WeatherStationDataEntity toImperial() {
 		setWindAvgMH(windAvgMS*2.23694);
 		setWindMaxMH(windMaxMS*2.23694);
-		setTemperatureF( (temperatureC*(9/5))+32 );
+		setTemperatureF( (temperatureC*9/5)+32 );
 		setRainIn(rainMm/25.4);
 		return this;
 	}
