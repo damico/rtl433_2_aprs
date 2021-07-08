@@ -2,18 +2,15 @@ package org.jdamico.rtl433toaprs.helpers;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Properties;
 
 import org.jdamico.javax25.PacketHandlerImpl;
 import org.jdamico.javax25.ax25.Afsk1200Modulator;
 import org.jdamico.javax25.ax25.Afsk1200MultiDemodulator;
 import org.jdamico.javax25.ax25.Packet;
 import org.jdamico.javax25.ax25.PacketDemodulator;
-import org.jdamico.javax25.radiocontrol.TransmitController;
 import org.jdamico.javax25.soundcard.Soundcard;
 import org.jdamico.rtl433toaprs.entities.RainEntity;
 import org.jdamico.rtl433toaprs.entities.WeatherStationDataEntity;
@@ -22,6 +19,10 @@ import com.google.gson.Gson;
 
 public class ProcessBuilderHelper {
 
+	private static int rate = 48000;
+	private static int buffer_size = 100;
+	private Soundcard sc = null;
+	private Afsk1200Modulator mod =  null;
 	private static int minutes = 0;
 	private static int lastMinute = 0;
 	private static final String rainJsonPath = "dist/";
@@ -33,11 +34,24 @@ public class ProcessBuilderHelper {
 	private String soundcardName;
 
 	public ProcessBuilderHelper(String callsign, String strLat, String strLng, String strTz, String soundcardName) {
-		this.callsign = callsign;
-		this.strLat = strLat;
-		this.strLng = strLng;
-		this.strTz = strTz;
-		this.soundcardName = soundcardName;
+
+		PacketDemodulator multi = null;
+
+		try {
+			multi = new Afsk1200MultiDemodulator(48000, new PacketHandlerImpl());
+			Afsk1200Modulator mod = new Afsk1200Modulator(rate);
+			sc = new Soundcard(rate, null, soundcardName, buffer_size, multi, mod);
+			this.callsign = callsign;
+			this.strLat = strLat;
+			this.strLng = strLng;
+			this.strTz = strTz;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+
+
 	}
 
 	public void caller() {
@@ -151,20 +165,10 @@ public class ProcessBuilderHelper {
 				complete_weather_data.getBytes());
 
 		System.out.println(packet);
-		int rate = 48000;
-		PacketHandlerImpl t = new PacketHandlerImpl();
-		PacketDemodulator multi = null;
-		try {
-			multi = new Afsk1200MultiDemodulator(48000, new PacketHandlerImpl());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Afsk1200Modulator mod = new Afsk1200Modulator(rate);
-		int buffer_size = 100;
-		Soundcard sc = new Soundcard(rate, null, soundcardName, buffer_size,multi,mod);
 		sc.displayAudioLevel();
 		mod.prepareToTransmit(packet);
 		sc.transmit();
+
 
 
 	}
