@@ -46,10 +46,10 @@ public class ProcessBuilderHelper {
 
 		InputStreamReader inputStreamReader = null;
 		BufferedReader reader = null;
-
+		Process process = null;
 		try {
 
-			Process process = processBuilder.start();
+			process = processBuilder.start();
 			inputStreamReader = new InputStreamReader(process.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
 			String line;
@@ -62,8 +62,9 @@ public class ProcessBuilderHelper {
 			e.printStackTrace();
 
 		}finally {
-			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();};
-			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();};
+			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
+			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
+			if(process!=null) process.destroy();
 		}
 	}
 
