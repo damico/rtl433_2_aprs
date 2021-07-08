@@ -113,9 +113,9 @@ public class ProcessBuilderHelper {
 	    		String pressureJsonStr = IOHelper.getInstance().readTextFileToString(pressureFile);
 	    		gson = new Gson();
 	    		PressureEntity pressureEntity = gson.fromJson(pressureJsonStr, PressureEntity.class);
-	    		pressureEntity.setPressure(pressureEntity.getPressure()/10);
+	    		//pressureEntity.setPressure(pressureEntity.getPressure()/10);
 	    		pressureValue = String.format("%05d" , pressureEntity.getPressure().intValue());
-	    	}
+	    	}else System.out.println("No pressure json file found at: "+pressureFile.getAbsolutePath());
 
 
 			Date now = new Date();
