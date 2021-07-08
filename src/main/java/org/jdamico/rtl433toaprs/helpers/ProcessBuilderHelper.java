@@ -39,7 +39,7 @@ public class ProcessBuilderHelper {
 
 		try {
 			multi = new Afsk1200MultiDemodulator(48000, new PacketHandlerImpl());
-			Afsk1200Modulator mod = new Afsk1200Modulator(rate);
+			mod = new Afsk1200Modulator(rate);
 			sc = new Soundcard(rate, null, soundcardName, buffer_size, multi, mod);
 			this.callsign = callsign;
 			this.strLat = strLat;
