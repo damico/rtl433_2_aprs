@@ -1,6 +1,12 @@
 package org.jdamico.rtl433toaprs;
 
+import java.io.File;
+
+import org.jdamico.rtl433toaprs.entities.PressureEntity;
 import org.jdamico.rtl433toaprs.entities.WeatherStationDataEntity;
+import org.jdamico.rtl433toaprs.helpers.IOHelper;
+
+import com.google.gson.Gson;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -32,8 +38,9 @@ public class AppTest
 
     /**
      * Rigourous Test :-)
+     * @throws Exception 
      */
-    public void testApp()
+    public void testApp() throws Exception
     {
     	
     	WeatherStationDataEntity weatherStationDataEntity = new WeatherStationDataEntity();
@@ -43,6 +50,17 @@ public class AppTest
     	weatherStationDataEntity.setRainMm(1628.648);
     	weatherStationDataEntity = weatherStationDataEntity.toImperial();
     	System.out.println(weatherStationDataEntity.getTemperatureF());
+    	
+    	
+    	File f = new File("dist/pressure.json");
+    	if(f !=null && f.exists() && f.isFile()) {
+    		String jsonStr = IOHelper.getInstance().readTextFileToString(f);
+    		Gson gson = new Gson();
+    		PressureEntity pressureEntity = gson.fromJson(jsonStr, PressureEntity.class);
+    		System.out.println(pressureEntity.getPressure()/10);
+    	}
+    	
+    	
         assertTrue( true );
     }
 }

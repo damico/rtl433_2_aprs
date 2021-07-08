@@ -12,6 +12,7 @@ import org.jdamico.javax25.ax25.Afsk1200MultiDemodulator;
 import org.jdamico.javax25.ax25.Packet;
 import org.jdamico.javax25.ax25.PacketDemodulator;
 import org.jdamico.javax25.soundcard.Soundcard;
+import org.jdamico.rtl433toaprs.entities.PressureEntity;
 import org.jdamico.rtl433toaprs.entities.RainEntity;
 import org.jdamico.rtl433toaprs.entities.WeatherStationDataEntity;
 
@@ -27,6 +28,7 @@ public class ProcessBuilderHelper {
 	private static int lastMinute = 0;
 	private static final String rainJsonPath = "dist/";
 	private static final String rainJsonFilePath = rainJsonPath+"rain.json";
+	private static final String pressureJsonFilePath = rainJsonPath+"pressure.json";
 	private String strLat; 
 	private String strLng; 
 	private String strTz;
@@ -104,6 +106,16 @@ public class ProcessBuilderHelper {
 			double rainMM = entity.getRainMm()-rainEntity.getInitialRain();
 			entity.setRainMm(rainMM);		
 			entity = entity.toImperial();
+			
+			String pressureValue = "...";
+			File pressureFile = new File(pressureJsonFilePath);
+	    	if(pressureFile!=null && pressureFile.exists() && pressureFile.isFile()) {
+	    		String pressureJsonStr = IOHelper.getInstance().readTextFileToString(pressureFile);
+	    		gson = new Gson();
+	    		PressureEntity pressureEntity = gson.fromJson(pressureJsonStr, PressureEntity.class);
+	    		pressureEntity.setPressure(pressureEntity.getPressure()/10);
+	    		pressureValue = String.format("%05d" , pressureEntity.getPressure().intValue());
+	    	}
 
 
 			Date now = new Date();
@@ -132,7 +144,7 @@ public class ProcessBuilderHelper {
 						+"r..."
 						+"p"+String.format("%03d" , entity.getRainIn().intValue())
 						+"P..."
-						+"b..."
+						+"b"+pressureValue
 						+"h"+String.format("%02d" , entity.getHumidity().intValue()));
 
 

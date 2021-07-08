@@ -1,13 +1,7 @@
 package org.jdamico.rtl433toaprs;
 
-import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
-
 import org.jdamico.javax25.soundcard.Soundcard;
 import org.jdamico.rtl433toaprs.helpers.ProcessBuilderHelper;
-
-import com.google.gson.Gson;
 
 
 /*
