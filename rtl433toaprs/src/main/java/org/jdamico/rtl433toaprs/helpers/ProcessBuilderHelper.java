@@ -24,7 +24,8 @@ public class ProcessBuilderHelper {
 
 	private static int minutes = 0;
 	private static int lastMinute = 0;
-	private static final String rainJsonFilePath = "dist/rain.json";
+	private static final String rainJsonPath = "dist/";
+	private static final String rainJsonFilePath = rainJsonPath+"rain.json";
 	private String strLat; 
 	private String strLng; 
 	private String strTz;
@@ -66,68 +67,75 @@ public class ProcessBuilderHelper {
 		}
 	}
 
-	public void jsonParser(String strLat, String strLng, String strTz, String jsonStr) throws Exception {
-		Gson gson = new Gson();
-		WeatherStationDataEntity entity = gson.fromJson(jsonStr, WeatherStationDataEntity.class);
+	public void jsonParser(String strLat, String strLng, String strTz, String jsonStr) {
 
-		File rainJson = new File(rainJsonFilePath);
-		RainEntity rainEntity = null;
-		if(rainJson != null && rainJson.exists() && rainJson.isFile()) {
-			String rainJsonStr = IOHelper.getInstance().readTextFileToString(rainJson);
-			rainEntity = gson.fromJson(rainJsonStr, RainEntity.class);
-		}else{
-			rainEntity = new RainEntity(entity.getRainMm());
-			IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
-		}
-		double rainMM = entity.getRainMm()-rainEntity.getInitialRain();
-		entity.setRainMm(rainMM);		
-		entity = entity.toImperial();
+		try {
 
+			Gson gson = new Gson();
+			WeatherStationDataEntity entity = gson.fromJson(jsonStr, WeatherStationDataEntity.class);
 
-		Date now = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(now);
-		int calMinute = cal.get(Calendar.MINUTE);
-
-		if(lastMinute != calMinute) {
-			lastMinute = calMinute;
-			minutes++;
-			System.out.println(minutes);
-
-			double latitude = Double.parseDouble(strLat);
-			double longitude = Double.parseDouble(strLng);
-			int tz = Integer.parseInt(strTz);	
-			cal.add(Calendar.HOUR_OF_DAY, tz);
-			String complete_weather_data = (
-					"@"+String.format("%02d" , cal.get(Calendar.DAY_OF_MONTH))
-					+String.format("%02d" , cal.get(Calendar.HOUR_OF_DAY))
-					+String.format("%02d" , calMinute)
-					+"z"+toString(latitude, longitude)
-					+"_"+String.format("%03d" , entity.getWindDirDeg())
-					+"/"+String.format("%03d" , entity.getWindAvgMH().intValue())
-					+"g"+String.format("%03d" , entity.getWindMaxMH().intValue())
-					+"t"+String.format("%03d" , entity.getTemperatureF().intValue())
-					+"r..."
-					+"p"+String.format("%03d" , entity.getRainIn().intValue())
-					+"P..."
-					+"b..."
-					+"h"+String.format("%02d" , entity.getHumidity().intValue()));
+			File rainJsonFile = new File(rainJsonFilePath);
+			RainEntity rainEntity = null;
+			if(rainJsonFile != null && rainJsonFile.exists() && rainJsonFile.isFile()) {
+				String rainJsonStr = IOHelper.getInstance().readTextFileToString(rainJsonFile);
+				rainEntity = gson.fromJson(rainJsonStr, RainEntity.class);
+			}else{
+				rainEntity = new RainEntity(entity.getRainMm());
+				File rainJsonFolder = new File(rainJsonPath);
+				if(rainJsonFolder == null || !rainJsonFolder.exists()) rainJsonFolder.mkdir();
+				IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+			}
+			double rainMM = entity.getRainMm()-rainEntity.getInitialRain();
+			entity.setRainMm(rainMM);		
+			entity = entity.toImperial();
 
 
-			sendPacket(complete_weather_data, soundcardName);
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+			int calMinute = cal.get(Calendar.MINUTE);
+
+			if(lastMinute != calMinute) {
+				lastMinute = calMinute;
+				minutes++;
+				System.out.println(minutes);
+
+				double latitude = Double.parseDouble(strLat);
+				double longitude = Double.parseDouble(strLng);
+				int tz = Integer.parseInt(strTz);	
+				cal.add(Calendar.HOUR_OF_DAY, tz);
+				String complete_weather_data = (
+						"@"+String.format("%02d" , cal.get(Calendar.DAY_OF_MONTH))
+						+String.format("%02d" , cal.get(Calendar.HOUR_OF_DAY))
+						+String.format("%02d" , calMinute)
+						+"z"+toString(latitude, longitude)
+						+"_"+String.format("%03d" , entity.getWindDirDeg())
+						+"/"+String.format("%03d" , entity.getWindAvgMH().intValue())
+						+"g"+String.format("%03d" , entity.getWindMaxMH().intValue())
+						+"t"+String.format("%03d" , entity.getTemperatureF().intValue())
+						+"r..."
+						+"p"+String.format("%03d" , entity.getRainIn().intValue())
+						+"P..."
+						+"b..."
+						+"h"+String.format("%02d" , entity.getHumidity().intValue()));
+
+
+				sendPacket(complete_weather_data, soundcardName);
 
 
 
-			if(minutes == 1440) {
-				minutes = 0;
-				if(rainMM > 0) {
-					rainEntity.setInitialRain(rainEntity.getInitialRain()+rainMM);
-					IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+				if(minutes == 1440) {
+					minutes = 0;
+					if(rainMM > 0) {
+						rainEntity.setInitialRain(rainEntity.getInitialRain()+rainMM);
+						IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+					}
 				}
 			}
+
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
-
-
 
 
 	}
