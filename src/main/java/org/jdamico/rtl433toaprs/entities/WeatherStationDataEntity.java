@@ -56,6 +56,10 @@ public class WeatherStationDataEntity {
 	
 	private Double rainIn;
 	
+	private Double pastHourRainIn;
+	
+	private Double pastHourRainMM;
+	
 	public String getTime() {
 		return time;
 	}
@@ -172,7 +176,8 @@ public class WeatherStationDataEntity {
 		setWindAvgMH(windAvgMS*2.23694);
 		setWindMaxMH(windMaxMS*2.23694);
 		setTemperatureF( (temperatureC*9/5)+32 );
-		setRainIn(rainMm/25.4);
+		setRainIn(rainMm != null ? rainMm/25.4 : 0);
+		setPastHourRainIn(pastHourRainIn !=null ? pastHourRainIn/25.4 : 0);
 		return this;
 	}
 
@@ -206,6 +211,22 @@ public class WeatherStationDataEntity {
 
 	public void setRainIn(Double rainIn) {
 		this.rainIn = rainIn;
+	}
+
+	public Double getPastHourRainMM() {
+		return pastHourRainMM;
+	}
+
+	public void setPastHourRainMM(Double pastHourRainMM) {
+		this.pastHourRainMM = pastHourRainMM;
+	}
+
+	public Double getPastHourRainIn() {
+		return pastHourRainIn;
+	}
+
+	public void setPastHourRainIn(Double pastHourRainIn) {
+		this.pastHourRainIn = pastHourRainIn;
 	}
 
 }
