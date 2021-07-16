@@ -163,8 +163,6 @@ public class ProcessBuilderHelper {
 
 				sendPacket(complete_weather_data, soundcardName);
 
-
-
 				if(day_minutes == 1440) {
 					day_minutes = 0;
 					if(rainMM > 0) {
