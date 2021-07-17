@@ -27,7 +27,7 @@ public class App
 
 
 		String helpInfo = "Usage parameters: callsign decimal_lat decimal_lng timezone \"soundcard name\"";
-		if(args.length !=5 ||  args.length !=6) {
+		if(args.length !=5 &&  args.length !=6) {
 			System.err.println("Incorrect usage. "+helpInfo);
 		}else {
 
