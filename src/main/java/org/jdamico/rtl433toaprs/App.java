@@ -27,13 +27,20 @@ public class App
 
 
 		String helpInfo = "Usage parameters: callsign decimal_lat decimal_lng timezone \"soundcard name\"";
-		if(args.length != 5) {
+		if(args.length !=5 ||  args.length !=6) {
 			System.err.println("Incorrect usage. "+helpInfo);
 		}else {
 
 			try {
 				Soundcard.enumerate();
-				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(args[0], args[1], args[2], args[3], args[4]);
+				
+				Double initialRain = null;
+				
+				try {
+					initialRain = Double.parseDouble(args[5]);
+				} catch (Exception e) {}
+				
+				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(args[0], args[1], args[2], args[3], args[4], initialRain);
 				processBuilderHelper.caller();
 			} catch (Exception e) {
 				e.printStackTrace();

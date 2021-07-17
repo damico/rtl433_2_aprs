@@ -43,11 +43,13 @@ public class ProcessBuilderHelper {
 	private int zuluCalHour;
 
 
-	public ProcessBuilderHelper(String callsign, String strLat, String strLng, String strTz, String soundcardName) throws Exception {
+	public ProcessBuilderHelper(String callsign, String strLat, String strLng, String strTz, String soundcardName, Double initialRain) throws Exception {
 
 		gson = new Gson();
 		rainJsonFile = new File(rainJsonFilePath);
 		if(rainJsonFile != null && rainJsonFile.exists() && rainJsonFile.isFile()) rainJsonFile.delete();
+		
+		if(initialRain !=null) rainEntity = new RainEntity(initialRain);
 		
 		PacketDemodulator multi = null;
 
