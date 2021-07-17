@@ -141,6 +141,7 @@ public class ProcessBuilderHelper {
 				System.out.println(hours+"h"+minutes);
 
 				double rainMM = weatherStationDataEntity.getRainMm()-rainEntity.getInitialRain();
+				if(rainMM > 0) System.out.println("Raining: "+rainMM+" | "+weatherStationDataEntity.getRainMm()+" | "+rainEntity.getInitialRain());
 				weatherStationDataEntity.setRainMm(rainMM);		
 				weatherStationDataEntity = weatherStationDataEntity.toImperial();
 				
@@ -173,6 +174,7 @@ public class ProcessBuilderHelper {
 					weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
 					if(localCalHour == 24) rainMmSinceLocalMidnight = .0;
 					setRainHourly(hourRainMm, zuluCalHour, rainEntity);
+					System.out.println("RainHourly: "+hourRainMm+" | "+zuluCalHour);
 					hourRainMm = .0;
 					minutes = 0;
 					hours++;
