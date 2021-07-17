@@ -39,7 +39,8 @@ public class ProcessBuilderHelper {
 	private Gson gson;
 	private RainEntity rainEntity;
 	private File rainJsonFile;
-	private Double rainMmSinceLocalMidnight;
+	private Double rainMmSinceLocalMidnight = .0;
+	private Double dailyRainMm = .0;
 	private int zuluCalHour;
 
 
@@ -144,8 +145,21 @@ public class ProcessBuilderHelper {
 
 				double rainMM = weatherStationDataEntity.getRainMm()-rainEntity.getInitialRain();
 				if(rainMM > 0) System.out.println("Raining: "+rainMM+" | "+weatherStationDataEntity.getRainMm()+" | "+rainEntity.getInitialRain());
-				weatherStationDataEntity.setRainMm(rainMM);		
+				
+				hourRainMm = hourRainMm + rainMM;
+				weatherStationDataEntity.setPastHourRainMM(hourRainMm);
+				rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + hourRainMm;
+				dailyRainMm = dailyRainMm + hourRainMm;
+				weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
+				setRainHourly(hourRainMm, zuluCalHour, rainEntity);
+				
+				
+				
+				
+				weatherStationDataEntity.setRainMm(dailyRainMm);		
 				weatherStationDataEntity = weatherStationDataEntity.toImperial();
+				
+				System.out.println("RainHourly: "+hourRainMm+" | "+zuluCalHour + " | "+weatherStationDataEntity.getPastHourRainIn().intValue());
 				
 				double latitude = Double.parseDouble(strLat);
 				double longitude = Double.parseDouble(strLng);
@@ -169,14 +183,9 @@ public class ProcessBuilderHelper {
 
 				sendPacket(complete_weather_data, soundcardName);
 				
-				hourRainMm = hourRainMm + rainMM;
+				
 				if(minutes == 60) {
-					weatherStationDataEntity.setPastHourRainMM(hourRainMm);
-					rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + hourRainMm;
-					weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
 					if(localCalHour == 24) rainMmSinceLocalMidnight = .0;
-					setRainHourly(hourRainMm, zuluCalHour, rainEntity);
-					System.out.println("RainHourly: "+hourRainMm+" | "+zuluCalHour);
 					hourRainMm = .0;
 					minutes = 0;
 					hours++;
@@ -184,10 +193,10 @@ public class ProcessBuilderHelper {
 				
 				if(hours == 24) {
 					hours = 0;
-					if(rainMM > 0) {
-						rainEntity.setInitialRain(rainEntity.getInitialRain()+rainMM);
-						IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
-					}
+					dailyRainMm = 0.0;
+					rainEntity.setInitialRain(rainEntity.getInitialRain()+rainMM);
+					IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+					
 				}
 			}
 
