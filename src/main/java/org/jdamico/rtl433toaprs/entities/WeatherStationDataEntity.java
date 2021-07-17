@@ -60,6 +60,10 @@ public class WeatherStationDataEntity {
 	
 	private Double pastHourRainMM;
 	
+	private Double rainMmSinceLocalMidnight;
+	
+	private Double rainInSinceLocalMidnight;
+	
 	public String getTime() {
 		return time;
 	}
@@ -177,7 +181,8 @@ public class WeatherStationDataEntity {
 		setWindMaxMH(windMaxMS*2.23694);
 		setTemperatureF( (temperatureC*9/5)+32 );
 		setRainIn(rainMm != null ? rainMm/25.4 : 0);
-		setPastHourRainIn(pastHourRainIn !=null ? pastHourRainIn/25.4 : 0);
+		setPastHourRainIn(pastHourRainIn !=null ? pastHourRainMM/25.4 : 0);
+		setRainInSinceLocalMidnight(rainInSinceLocalMidnight != null ? rainMmSinceLocalMidnight/25.4 : 0);
 		return this;
 	}
 
@@ -227,6 +232,22 @@ public class WeatherStationDataEntity {
 
 	public void setPastHourRainIn(Double pastHourRainIn) {
 		this.pastHourRainIn = pastHourRainIn;
+	}
+
+	public Double getRainMmSinceLocalMidnight() {
+		return rainMmSinceLocalMidnight;
+	}
+
+	public void setRainMmSinceLocalMidnight(Double rainMmSinceLocalMidnight) {
+		this.rainMmSinceLocalMidnight = rainMmSinceLocalMidnight;
+	}
+
+	public Double getRainInSinceLocalMidnight() {
+		return rainInSinceLocalMidnight;
+	}
+
+	public void setRainInSinceLocalMidnight(Double rainInSinceLocalMidnight) {
+		this.rainInSinceLocalMidnight = rainInSinceLocalMidnight;
 	}
 
 }

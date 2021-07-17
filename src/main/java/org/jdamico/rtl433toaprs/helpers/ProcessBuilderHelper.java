@@ -24,8 +24,8 @@ public class ProcessBuilderHelper {
 	private static int buffer_size = 100;
 	private Soundcard sc = null;
 	private Afsk1200Modulator mod =  null;
-	private static int hour_minutes = 0;
-	private static int day_minutes = 0;
+	private static int minutes = 0;
+	private static int hours = 0;
 	private static int lastMinute = 0;
 	private Double hourRainMm;
 	private static final String rainJsonPath = "dist/";
@@ -36,13 +36,23 @@ public class ProcessBuilderHelper {
 	private String strTz;
 	private String callsign;
 	private String soundcardName;
+	private Gson gson;
+	private RainEntity rainEntity;
+	private File rainJsonFile;
+	private Double rainMmSinceLocalMidnight;
+	private int zuluCalHour;
 
-	public ProcessBuilderHelper(String callsign, String strLat, String strLng, String strTz, String soundcardName) {
 
+	public ProcessBuilderHelper(String callsign, String strLat, String strLng, String strTz, String soundcardName) throws Exception {
+
+		gson = new Gson();
+		rainJsonFile = new File(rainJsonFilePath);
+		if(rainJsonFile != null && rainJsonFile.exists() && rainJsonFile.isFile()) rainJsonFile.delete();
+		
 		PacketDemodulator multi = null;
 
 		try {
-			multi = new Afsk1200MultiDemodulator(48000, new PacketHandlerImpl());
+			multi = new Afsk1200MultiDemodulator(rate, new PacketHandlerImpl());
 			mod = new Afsk1200Modulator(rate);
 			sc = new Soundcard(rate, null, soundcardName, buffer_size, multi, mod);
 			this.callsign = callsign;
@@ -91,15 +101,9 @@ public class ProcessBuilderHelper {
 
 		try {
 
-			Gson gson = new Gson();
 			WeatherStationDataEntity weatherStationDataEntity = gson.fromJson(jsonStr, WeatherStationDataEntity.class);
-
-			File rainJsonFile = new File(rainJsonFilePath);
-			RainEntity rainEntity = null;
-			if(rainJsonFile != null && rainJsonFile.exists() && rainJsonFile.isFile()) {
-				String rainJsonStr = IOHelper.getInstance().readTextFileToString(rainJsonFile);
-				rainEntity = gson.fromJson(rainJsonStr, RainEntity.class);
-			}else{
+			
+			if(rainEntity == null) {
 				rainEntity = new RainEntity(weatherStationDataEntity.getRainMm());
 				File rainJsonFolder = new File(rainJsonPath);
 				if(rainJsonFolder == null || !rainJsonFolder.exists()) rainJsonFolder.mkdir();
@@ -129,13 +133,12 @@ public class ProcessBuilderHelper {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(now);
 			int calMinute = cal.get(Calendar.MINUTE);
-			int calHour = cal.get(Calendar.HOUR_OF_DAY);
+			int localCalHour =cal.get(Calendar.HOUR_OF_DAY);
 
 			if(lastMinute != calMinute) {
 				lastMinute = calMinute;
-				day_minutes++;
-				hour_minutes++;
-				System.out.println(day_minutes);
+				minutes++;
+				System.out.println(hours+"h"+minutes);
 
 				double rainMM = weatherStationDataEntity.getRainMm()-rainEntity.getInitialRain();
 				weatherStationDataEntity.setRainMm(rainMM);		
@@ -145,9 +148,10 @@ public class ProcessBuilderHelper {
 				double longitude = Double.parseDouble(strLng);
 				int tz = Integer.parseInt(strTz);	
 				cal.add(Calendar.HOUR_OF_DAY, tz);
+				zuluCalHour = cal.get(Calendar.HOUR_OF_DAY);
 				String complete_weather_data = (
 						"@"+String.format("%02d" , cal.get(Calendar.DAY_OF_MONTH))
-						+String.format("%02d" , cal.get(Calendar.HOUR_OF_DAY))
+						+String.format("%02d" , zuluCalHour)
 						+String.format("%02d" , calMinute)
 						+"z"+toString(latitude, longitude)
 						+"_"+String.format("%03d" , weatherStationDataEntity.getWindDirDeg())
@@ -156,30 +160,30 @@ public class ProcessBuilderHelper {
 						+"t"+String.format("%03d" , weatherStationDataEntity.getTemperatureF().intValue())
 						+"r"+String.format("%03d" , weatherStationDataEntity.getPastHourRainIn().intValue())
 						+"p"+String.format("%03d" , weatherStationDataEntity.getRainIn().intValue())
-						+"P..."
+						+"P"+String.format("%03d" , weatherStationDataEntity.getRainInSinceLocalMidnight().intValue())
 						+"b"+pressureValue
 						+"h"+String.format("%02d" , weatherStationDataEntity.getHumidity().intValue()));
 
-
 				sendPacket(complete_weather_data, soundcardName);
-
-				if(day_minutes == 1440) {
-					day_minutes = 0;
+				
+				hourRainMm = hourRainMm + rainMM;
+				if(minutes == 60) {
+					weatherStationDataEntity.setPastHourRainMM(hourRainMm);
+					rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + hourRainMm;
+					weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
+					if(localCalHour == 24) rainMmSinceLocalMidnight = .0;
+					setRainHourly(hourRainMm, zuluCalHour, rainEntity);
+					hourRainMm = .0;
+					minutes = 0;
+					hours++;
+				}
+				
+				if(hours == 24) {
+					hours = 0;
 					if(rainMM > 0) {
 						rainEntity.setInitialRain(rainEntity.getInitialRain()+rainMM);
 						IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 					}
-				}
-				
-				if(hour_minutes <= 60) {
-					if(rainMM > 0) {
-						hourRainMm = hourRainMm + rainMM;
-						weatherStationDataEntity.setPastHourRainMM(hourRainMm);
-					}
-				}else {
-					setRainHourly(hourRainMm, calHour, rainEntity);
-					hourRainMm = .0;
-					hour_minutes = 0;
 				}
 			}
 
@@ -267,7 +271,6 @@ public class ProcessBuilderHelper {
 		default:
 			break;
 		}
-		Gson gson = new Gson(); 
 		IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 		
 	}
