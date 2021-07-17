@@ -27,7 +27,7 @@ public class ProcessBuilderHelper {
 	private static int minutes = 0;
 	private static int hours = 0;
 	private static int lastMinute = 0;
-	private Double hourRainMm;
+	private Double hourRainMm = .0;
 	private static final String rainJsonPath = "dist/";
 	private static final String rainJsonFilePath = rainJsonPath+"rain.json";
 	private static final String pressureJsonFilePath = rainJsonPath+"pressure.json";
