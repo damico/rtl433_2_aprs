@@ -149,7 +149,7 @@ public class ProcessBuilderHelper {
 				hourRainMm = hourRainMm + rainMM;
 				weatherStationDataEntity.setPastHourRainMM(hourRainMm);
 				rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + hourRainMm;
-				dailyRainMm = dailyRainMm + hourRainMm;
+				dailyRainMm = dailyRainMm + rainMM;
 				weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
 				setRainHourly(hourRainMm, zuluCalHour, rainEntity);
 				
@@ -159,7 +159,7 @@ public class ProcessBuilderHelper {
 				weatherStationDataEntity.setRainMm(dailyRainMm);		
 				weatherStationDataEntity = weatherStationDataEntity.toImperial();
 				
-				System.out.println("RainHourly: "+hourRainMm+" | "+zuluCalHour + " | "+weatherStationDataEntity.getPastHourRainIn().intValue());
+				System.out.println("RainHourly: "+hourRainMm+" | "+zuluCalHour + " | "+weatherStationDataEntity.getRainIn().intValue());
 				
 				double latitude = Double.parseDouble(strLat);
 				double longitude = Double.parseDouble(strLng);
