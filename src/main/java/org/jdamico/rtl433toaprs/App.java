@@ -1,7 +1,14 @@
 package org.jdamico.rtl433toaprs;
 
+import java.io.File;
+
+import org.jdamico.gpsd.client.GpsdClientRuntime;
 import org.jdamico.javax25.soundcard.Soundcard;
+import org.jdamico.rtl433toaprs.entities.ConfigEntity;
+import org.jdamico.rtl433toaprs.helpers.IOHelper;
 import org.jdamico.rtl433toaprs.helpers.ProcessBuilderHelper;
+
+import com.google.gson.Gson;
 
 
 /*
@@ -18,30 +25,58 @@ import org.jdamico.rtl433toaprs.helpers.ProcessBuilderHelper;
  *  The first four fields (wind direction, wind speed, temperature and gust) are required, in that order, and if a particular measurement is not present, the three numbers should be replaced by "..." to indicate no data available.
  */
 
-public class App 
-{
+public class App {
 	public static void main( String[] args ){
 
 
+		ConfigEntity configEntity = null;
 
-
-
-		String helpInfo = "Usage parameters: callsign decimal_lat decimal_lng timezone \"soundcard name\"";
+		String helpInfo = "Usage parameters options A: callsign decimal_lat decimal_lng timezone \"soundcard name\"\n"
+						+ "Usage parameters options B: callsign decimal_lat decimal_lng timezone \"soundcard name\" initial_rain_mm";
+		
 		if(args.length !=5 &&  args.length !=6) {
-			System.err.println("Incorrect usage. "+helpInfo);
+			
+			
+			
+			System.out.println("No valid parameters for command-line call: "+helpInfo);
+			System.out.println("Trying to use config file.");
+			
+			File configFile = new File("gpsd.client.json");
+			if(configFile != null && configFile.exists() && configFile.isFile()) {
+				
+				String configJsonStr = null;
+				try {
+					configJsonStr = IOHelper.getInstance().readTextFileToString(configFile);
+					Gson gson = new Gson();
+					configEntity = gson.fromJson(configJsonStr, ConfigEntity.class);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+	
+				
+			}
+			
 		}else {
 
 			try {
 				Soundcard.enumerate();
 				
-				Double initialRain = null;
-				
 				try {
-					initialRain = Double.parseDouble(args[5]);
+					configEntity  = new ConfigEntity(args[0], Double.parseDouble(args[1]), Double.parseDouble(args[2]), Integer.parseInt(args[3]), args[4], Double.parseDouble(args[5]));
 				} catch (Exception e) {}
 				
-				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(args[0], args[1], args[2], args[3], args[4], initialRain);
+				
+				GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
+				gpsdClientRuntime.connetAndCollectFromGpsD();
+				
+				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 				processBuilderHelper.caller();
+				
+				
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

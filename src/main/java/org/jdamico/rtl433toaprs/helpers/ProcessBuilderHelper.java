@@ -6,12 +6,14 @@ import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.jdamico.gpsd.client.threads.VerifierThread;
 import org.jdamico.javax25.PacketHandlerImpl;
 import org.jdamico.javax25.ax25.Afsk1200Modulator;
 import org.jdamico.javax25.ax25.Afsk1200MultiDemodulator;
 import org.jdamico.javax25.ax25.Packet;
 import org.jdamico.javax25.ax25.PacketDemodulator;
 import org.jdamico.javax25.soundcard.Soundcard;
+import org.jdamico.rtl433toaprs.entities.ConfigEntity;
 import org.jdamico.rtl433toaprs.entities.PressureEntity;
 import org.jdamico.rtl433toaprs.entities.RainEntity;
 import org.jdamico.rtl433toaprs.entities.WeatherStationDataEntity;
@@ -31,9 +33,9 @@ public class ProcessBuilderHelper {
 	private static final String rainJsonPath = "dist/";
 	private static final String rainJsonFilePath = rainJsonPath+"rain.json";
 	private static final String pressureJsonFilePath = rainJsonPath+"pressure.json";
-	private String strLat; 
-	private String strLng; 
-	private String strTz;
+	private Double latitude; 
+	private Double longitude; 
+	private Integer tz;
 	private String callsign;
 	private String soundcardName;
 	private Gson gson;
@@ -44,13 +46,13 @@ public class ProcessBuilderHelper {
 	private int zuluCalHour;
 
 
-	public ProcessBuilderHelper(String callsign, String strLat, String strLng, String strTz, String soundcardName, Double initialRain) throws Exception {
+	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
 
 		gson = new Gson();
 		rainJsonFile = new File(rainJsonFilePath);
 		if(rainJsonFile != null && rainJsonFile.exists() && rainJsonFile.isFile()) rainJsonFile.delete();
 		
-		if(initialRain !=null) rainEntity = new RainEntity(initialRain);
+		if(configEntity.getInitialRainMm() !=null) rainEntity = new RainEntity(configEntity.getInitialRainMm());
 		
 		PacketDemodulator multi = null;
 
@@ -58,10 +60,10 @@ public class ProcessBuilderHelper {
 			multi = new Afsk1200MultiDemodulator(rate, new PacketHandlerImpl());
 			mod = new Afsk1200Modulator(rate);
 			sc = new Soundcard(rate, null, soundcardName, buffer_size, multi, mod);
-			this.callsign = callsign;
-			this.strLat = strLat;
-			this.strLng = strLng;
-			this.strTz = strTz;
+			this.callsign = configEntity.getCallsign();
+			this.latitude = configEntity.getDecimalLat();
+			this.longitude = configEntity.getDecimalLng();
+			this.tz = configEntity.getTimezone();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -86,7 +88,7 @@ public class ProcessBuilderHelper {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				System.out.println("Return from RTL_433: "+line);
-				jsonParser(strLat, strLng, strTz, line);
+				jsonParser(latitude, longitude, tz, line);
 			}
 
 
@@ -100,7 +102,7 @@ public class ProcessBuilderHelper {
 		}
 	}
 
-	public void jsonParser(String strLat, String strLng, String strTz, String jsonStr) {
+	public void jsonParser(Double latitude, Double longitude, Integer tz, String jsonStr) {
 
 		try {
 
@@ -158,9 +160,12 @@ public class ProcessBuilderHelper {
 				
 				System.out.println("RainHourly: "+hourRainMm+" | "+zuluCalHour + " | "+weatherStationDataEntity.getRainIn().intValue());
 				
-				double latitude = Double.parseDouble(strLat);
-				double longitude = Double.parseDouble(strLng);
-				int tz = Integer.parseInt(strTz);	
+				if(VerifierThread.X != null && VerifierThread.Y != null) {
+					longitude = VerifierThread.X;
+					latitude = VerifierThread.Y;
+					System.out.println("Position updated by GPSD Client.");
+				}
+				
 				cal.add(Calendar.HOUR_OF_DAY, tz);
 				zuluCalHour = cal.get(Calendar.HOUR_OF_DAY);
 				String complete_weather_data = (
