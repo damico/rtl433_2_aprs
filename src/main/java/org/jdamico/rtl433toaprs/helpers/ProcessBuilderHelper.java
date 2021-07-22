@@ -59,12 +59,15 @@ public class ProcessBuilderHelper {
 		try {
 			multi = new Afsk1200MultiDemodulator(rate, new PacketHandlerImpl());
 			mod = new Afsk1200Modulator(rate);
+			System.out.println("Using soundcardName as: ["+soundcardName+"]");
 			sc = new Soundcard(rate, null, soundcardName, buffer_size, multi, mod);
 			this.callsign = configEntity.getCallsign();
 			this.latitude = configEntity.getDecimalLat();
 			this.longitude = configEntity.getDecimalLng();
 			this.tz = configEntity.getTimezone();
 		} catch (Exception e) {
+			System.err.println("Error trying to connect to GPSD.");
+			System.err.println("Exception at Main class: "+e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}

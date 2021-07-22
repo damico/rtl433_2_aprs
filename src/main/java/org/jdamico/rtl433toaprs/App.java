@@ -98,6 +98,8 @@ public class App {
 
 
 			} catch (Exception e) {
+				System.err.println("Error trying to connect to GPSD.");
+				System.err.println("Exception at Main class: "+e.getMessage());
 				e.printStackTrace();
 			}
 		}
