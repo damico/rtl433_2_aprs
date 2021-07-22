@@ -1,6 +1,7 @@
 package org.jdamico.rtl433toaprs;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.jdamico.gpsd.client.GpsdClientRuntime;
 import org.jdamico.javax25.soundcard.Soundcard;
@@ -28,59 +29,86 @@ import com.google.gson.Gson;
 public class App {
 	public static void main( String[] args ){
 
-
 		ConfigEntity configEntity = null;
 
 		String helpInfo = "Usage parameters options A: callsign decimal_lat decimal_lng timezone \"soundcard name\"\n"
-						+ "Usage parameters options B: callsign decimal_lat decimal_lng timezone \"soundcard name\" initial_rain_mm";
-		
-		if(args.length !=5 &&  args.length !=6) {
-			
-			
-			
-			System.out.println("No valid parameters for command-line call: "+helpInfo);
-			System.out.println("Trying to use config file.");
-			
-			File configFile = new File("gpsd.client.json");
-			if(configFile != null && configFile.exists() && configFile.isFile()) {
-				
-				String configJsonStr = null;
-				try {
-					configJsonStr = IOHelper.getInstance().readTextFileToString(configFile);
-					Gson gson = new Gson();
-					configEntity = gson.fromJson(configJsonStr, ConfigEntity.class);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
-	
-				
-			}
-			
+				+ "Usage parameters options B: callsign decimal_lat decimal_lng timezone \"soundcard name\" initial_rain_mm\n"
+				+ "Usage parameters options C: config_filepath_name";
+
+		if(args.length !=5 &&  args.length !=6 &&  args.length !=1) {
+
+			System.out.println("No valid parameters for config file: "+helpInfo);
+
 		}else {
+
+			if(args.length == 5 || args.length == 6) {
+				System.out.println("Trying to run by command-line parameters: "+printParams(args));
+				
+				Double initialRainMm = null;
+				
+				try {
+					if(args.length == 6) initialRainMm = Double.parseDouble(args[5]);
+				} catch (NumberFormatException e) {}
+				
+				try {
+					configEntity  = new ConfigEntity(args[0], Double.parseDouble(args[1]), Double.parseDouble(args[2]), Integer.parseInt(args[3]), args[4], initialRainMm);
+				} catch (Exception e) {
+					System.err.println("Error trying to process config parameters.");
+					System.err.println("Exception at Main class: "+e.getMessage());
+					e.printStackTrace();
+					System.exit(0);	
+				}
+			} else if(args.length == 1) {
+				System.out.println("Trying to run by config file: "+args[0]);
+				File configFile = new File(args[0]);
+				if(configFile != null && configFile.exists() && configFile.isFile()) {
+
+					String configJsonStr = null;
+					try {
+						configJsonStr = IOHelper.getInstance().readTextFileToString(configFile);
+						Gson gson = new Gson();
+						configEntity = gson.fromJson(configJsonStr, ConfigEntity.class);
+						try {
+							GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
+							gpsdClientRuntime.connetAndCollectFromGpsD();
+						}catch (IOException e) {
+							System.err.println("Error trying to connect to GPSD.");
+							System.err.println("Exception at Main class: "+e.getMessage());
+						}
+					} catch (Exception e) {
+						System.err.println("Error trying to connect to GPSD.");
+						System.err.println("Exception at Main class: "+e.getMessage());
+					}
+
+				}else {
+					System.out.println("No valid parameters for config file: "+helpInfo);
+
+				}
+			}else {
+				System.out.println("No valid parameters for command-line call: "+helpInfo);
+				System.out.println("Trying to use config file: "+args[0]);
+				System.out.println("No valid parameters for config file: "+helpInfo);
+			}
 
 			try {
 				Soundcard.enumerate();
-				
-				try {
-					configEntity  = new ConfigEntity(args[0], Double.parseDouble(args[1]), Double.parseDouble(args[2]), Integer.parseInt(args[3]), args[4], Double.parseDouble(args[5]));
-				} catch (Exception e) {}
-				
-				
-				GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
-				gpsdClientRuntime.connetAndCollectFromGpsD();
-				
 				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 				processBuilderHelper.caller();
-				
-				
-				
+
+
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private static String printParams(String[] args) {
+		StringBuffer sb = new StringBuffer();
+		for (String param : args) {
+			sb.append(param + " ");
+		}
+		return sb.toString();
 	}
 
 

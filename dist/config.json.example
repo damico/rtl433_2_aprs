@@ -1,0 +1,10 @@
+{
+	"callsign": "",
+	"decimal_lat": 1,
+	"decimal_lng": 1,
+	"timezone": 1,
+	"soundcard_name": "",
+	"initial_rain_mm": 1,
+	"gpsd_host": "",
+	"gpsd_port": ""
+}
