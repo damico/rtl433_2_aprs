@@ -1,6 +1,7 @@
 package org.jdamico.rtl433toaprs;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 import org.jdamico.rtl433toaprs.entities.PressureEntity;
 import org.jdamico.rtl433toaprs.entities.WeatherStationDataEntity;
@@ -59,6 +60,10 @@ public class AppTest
     		PressureEntity pressureEntity = gson.fromJson(jsonStr, PressureEntity.class);
     		System.out.println(pressureEntity.getPressure()/10);
     	}
+    	
+    	
+    	Double d = (50/25.4)*100;
+    	System.out.println(d.intValue());
     	
     	
         assertTrue( true );
