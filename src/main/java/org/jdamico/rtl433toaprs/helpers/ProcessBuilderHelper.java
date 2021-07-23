@@ -182,9 +182,9 @@ public class ProcessBuilderHelper {
 						+"/"+String.format("%03d" , weatherStationDataEntity.getWindAvgMH().intValue())
 						+"g"+String.format("%03d" , weatherStationDataEntity.getWindMaxMH().intValue())
 						+"t"+String.format("%03d" , weatherStationDataEntity.getTemperatureF().intValue())
-						+"r"+String.format("%03d" , weatherStationDataEntity.getPastHourRainIn().intValue())
-						+"p"+String.format("%03d" , weatherStationDataEntity.getRainIn().intValue())
-						+"P"+String.format("%03d" , weatherStationDataEntity.getRainInSinceLocalMidnight().intValue())
+						+"r"+String.format("%03d" , weatherStationDataEntity.getPastHourRainIn().doubleValue())
+						+"p"+String.format("%03d" , weatherStationDataEntity.getRainIn().doubleValue())
+						+"P"+String.format("%03d" , weatherStationDataEntity.getRainInSinceLocalMidnight().doubleValue())
 						+"b"+pressureValue
 						+"h"+String.format("%02d" , weatherStationDataEntity.getHumidity().intValue()));
 
