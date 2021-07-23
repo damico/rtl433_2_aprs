@@ -54,6 +54,8 @@ public class ProcessBuilderHelper {
 		
 		if(configEntity.getInitialRainMm() !=null) rainEntity = new RainEntity(configEntity.getInitialRainMm());
 		
+		soundcardName = configEntity.getSoundcardName();
+		
 		PacketDemodulator multi = null;
 
 		try {
