@@ -118,7 +118,7 @@ public class ProcessBuilderHelper {
 				File rainJsonFolder = new File(rainJsonPath);
 				if(rainJsonFolder == null || !rainJsonFolder.exists()) rainJsonFolder.mkdir();
 				IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
-			}else rainEntity.setInitialRain(weatherStationDataEntity.getRainMm());
+			}
 			
 			
 			String pressureValue = "...";
@@ -151,7 +151,10 @@ public class ProcessBuilderHelper {
 				System.out.println(hours+"h"+minutes);
 
 				double rainMM = weatherStationDataEntity.getRainMm()-rainEntity.getInitialRain();
-				if(rainMM > 0) System.out.println("Raining: "+rainMM+" | "+weatherStationDataEntity.getRainMm()+" | "+rainEntity.getInitialRain());
+				if(rainMM > 0) {
+					System.out.println("Raining: "+rainMM+" | "+weatherStationDataEntity.getRainMm()+" | "+rainEntity.getInitialRain());
+					rainEntity.setInitialRain(weatherStationDataEntity.getRainMm());
+				}
 				
 				hourRainMm = hourRainMm + rainMM;
 				weatherStationDataEntity.setPastHourRainMM(hourRainMm);
