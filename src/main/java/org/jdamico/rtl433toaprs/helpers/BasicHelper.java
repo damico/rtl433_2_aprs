@@ -102,4 +102,13 @@ public class BasicHelper {
 		}	
 	}
 
+	public String listToString(List<String> lst) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < lst.size(); i++) {
+			if(i + 1 == lst.size()) sb.append(lst.get(i));
+			else sb.append(lst.get(i)+", ");
+		}
+		return sb.toString();
+	}
+	
 }

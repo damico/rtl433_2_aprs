@@ -3,8 +3,10 @@ package org.jdamico.rtl433toaprs.helpers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.jdamico.gpsd.client.threads.VerifierThread;
 import org.jdamico.javax25.PacketHandlerImpl;
@@ -98,9 +100,15 @@ public class ProcessBuilderHelper {
 	}
 
 	public void caller() {
-		System.out.println("Calling rtl_433...");
+		List<String> rtl_cli = new ArrayList<String>();
+		
+		rtl_cli.add("rtl_433");
+		rtl_cli.add("-F");
+		rtl_cli.add("json");
+		
+		System.out.println("Calling rtl_433...("+BasicHelper.getInstance().listToString(rtl_cli)+")");
 		ProcessBuilder processBuilder = new ProcessBuilder();
-		processBuilder.command("rtl_433", "-F", "json");
+		processBuilder.command(rtl_cli);
 
 		InputStreamReader inputStreamReader = null;
 		BufferedReader reader = null;
@@ -118,7 +126,11 @@ public class ProcessBuilderHelper {
 
 
 		} catch (Exception e) {
+			System.err.println("Error calling : "+this.getClass().getName());
+			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
+			System.err.println("rtl_cli: "+BasicHelper.getInstance().listToString(rtl_cli));
 			e.printStackTrace();
+			System.exit(1);
 
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
