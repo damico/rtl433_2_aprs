@@ -180,9 +180,9 @@ public class WeatherStationDataEntity {
 		setWindAvgMH(windAvgMS*2.23694);
 		setWindMaxMH(windMaxMS*2.23694);
 		setTemperatureF( (temperatureC*9/5)+32 );
-		setRainIn(rainMm != null ? (rainMm/25.4)/100 : 0);
-		setPastHourRainIn(pastHourRainIn !=null ? (pastHourRainMM/25.4)/100 : 0);
-		setRainInSinceLocalMidnight(rainInSinceLocalMidnight != null ? (rainMmSinceLocalMidnight/25.4)/100 : 0);
+		setRainIn(rainMm != null ? (rainMm/25.4)*100 : 0); //in hundredths of inches
+		setPastHourRainIn(pastHourRainIn !=null ? (pastHourRainMM/25.4)*100 : 0); //in hundredths of inches
+		setRainInSinceLocalMidnight(rainInSinceLocalMidnight != null ? (rainMmSinceLocalMidnight/25.4)*100 : 0); //in hundredths of inches
 		return this;
 	}
 
