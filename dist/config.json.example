@@ -6,5 +6,6 @@
 	"soundcard_name": "",
 	"initial_rain_mm": 1,
 	"gpsd_host": "",
-	"gpsd_port": ""
+	"gpsd_port": "",
+	"station_name": "SciCrop SE-2900"
 }

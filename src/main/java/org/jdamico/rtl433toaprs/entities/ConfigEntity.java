@@ -20,6 +20,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class ConfigEntity {
 
+	@SerializedName("station_name")
+	@Expose
+	private String stationName;
+	
 	@SerializedName("callsign")
 	@Expose
 	private String callsign;
@@ -135,6 +139,14 @@ public class ConfigEntity {
 	
 	public ConfigEntity() {
 		super();
+	}
+
+	public String getStationName() {
+		return stationName;
+	}
+
+	public void setStationName(String stationName) {
+		this.stationName = stationName;
 	}
 
 }

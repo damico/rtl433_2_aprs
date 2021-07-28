@@ -47,6 +47,7 @@ public class ProcessBuilderHelper {
 	private Double rainMmSinceLocalMidnight = .0;
 	private Double dailyRainMm = .0;
 	private int zuluCalHour;
+	private String stationName;
 
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
@@ -75,6 +76,8 @@ public class ProcessBuilderHelper {
 		}
 		
 		if(configEntity.getInitialRainMm() !=null) rainEntity = new RainEntity(configEntity.getInitialRainMm());
+		if(configEntity.getStationName() !=null) stationName = configEntity.getStationName();
+		else stationName = Constants.APP_NAME;
 		
 		soundcardName = configEntity.getSoundcardName();
 		
@@ -219,7 +222,8 @@ public class ProcessBuilderHelper {
 						+"p"+String.format("%03d" , weatherStationDataEntity.getRainIn().intValue())
 						+"P"+String.format("%03d" , weatherStationDataEntity.getRainInSinceLocalMidnight().intValue())
 						+"b"+pressureValue
-						+"h"+String.format("%02d" , weatherStationDataEntity.getHumidity().intValue()));
+						+"h"+String.format("%02d" , weatherStationDataEntity.getHumidity().intValue())
+						+stationName);
 
 				sendPacket(complete_weather_data, soundcardName);
 				
