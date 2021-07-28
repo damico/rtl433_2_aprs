@@ -128,8 +128,6 @@ public class ProcessBuilderHelper {
 		} catch (Exception e) {
 			System.err.println("Error calling : "+this.getClass().getName());
 			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
-			System.err.println("rtl_cli: "+BasicHelper.getInstance().listToString(rtl_cli));
-			e.printStackTrace();
 			System.exit(1);
 
 		}finally {
@@ -243,7 +241,9 @@ public class ProcessBuilderHelper {
 			}
 
 		}catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("Error calling jsonParser: "+this.getClass().getName());
+			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
+			System.exit(1);
 		}
 
 
