@@ -223,7 +223,7 @@ public class ProcessBuilderHelper {
 						+"P"+String.format("%03d" , weatherStationDataEntity.getRainInSinceLocalMidnight().intValue())
 						+"b"+pressureValue
 						+"h"+String.format("%02d" , weatherStationDataEntity.getHumidity().intValue())
-						+"wSCIP");
+						+stationName.substring(0, 36));
 
 				sendPacket(complete_weather_data, soundcardName);
 				
