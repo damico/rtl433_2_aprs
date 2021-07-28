@@ -181,8 +181,11 @@ public class WeatherStationDataEntity {
 		setWindMaxMH(windMaxMS*2.23694);
 		setTemperatureF( (temperatureC*9/5)+32 );
 		setRainIn(rainMm != null ? (rainMm/25.4)*100 : 0); //in hundredths of inches
-		setPastHourRainIn(pastHourRainIn !=null ? (pastHourRainMM/25.4)*100 : 0); //in hundredths of inches
-		setRainInSinceLocalMidnight(rainInSinceLocalMidnight != null ? (rainMmSinceLocalMidnight/25.4)*100 : 0); //in hundredths of inches
+		setPastHourRainIn(pastHourRainMM !=null ? (pastHourRainMM/25.4)*100 : 0); //in hundredths of inches
+		setRainInSinceLocalMidnight(rainMmSinceLocalMidnight != null ? (rainMmSinceLocalMidnight/25.4)*100 : 0); //in hundredths of inches
+		
+		System.out.println("getRainIn: "+ getRainIn()+" | getPastHourRainIn: "+getPastHourRainIn()+" | getRainInSinceLocalMidnight: "+getRainInSinceLocalMidnight());
+		
 		return this;
 	}
 
