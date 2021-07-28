@@ -13,6 +13,7 @@ import org.jdamico.javax25.ax25.Afsk1200MultiDemodulator;
 import org.jdamico.javax25.ax25.Packet;
 import org.jdamico.javax25.ax25.PacketDemodulator;
 import org.jdamico.javax25.soundcard.Soundcard;
+import org.jdamico.rtl433toaprs.Constants;
 import org.jdamico.rtl433toaprs.entities.ConfigEntity;
 import org.jdamico.rtl433toaprs.entities.PressureEntity;
 import org.jdamico.rtl433toaprs.entities.RainEntity;
@@ -50,7 +51,26 @@ public class ProcessBuilderHelper {
 
 		gson = new Gson();
 		rainJsonFile = new File(rainJsonFilePath);
-		if(rainJsonFile != null && rainJsonFile.exists() && rainJsonFile.isFile()) rainJsonFile.delete();
+		if(rainJsonFile != null && rainJsonFile.exists() && rainJsonFile.isFile()) {
+			
+			rainEntity = RainEntity.fromJsonFile(rainJsonFile);
+			long diffHoursFromLastUpdate = BasicHelper.getInstance().getDiffHoursBetweenDates(rainEntity.getLastUpdateDate(), new Date());
+			if(diffHoursFromLastUpdate > Constants.LAST_UPDATE_LIMIT) rainJsonFile.delete();
+			else {
+				
+				
+				
+				rainMmSinceLocalMidnight = rainEntity.getRain_mm_since_local_midnight();
+				dailyRainMm = rainEntity.getDaily_rain_mm();
+				hourRainMm = rainEntity.getHour_rain_mm();
+				
+				System.out.println("Hours from lastUpdate: "+diffHoursFromLastUpdate+" | Recovering saved data: ");
+				System.out.println("rainMmSinceLocalMidnight: "+rainMmSinceLocalMidnight);
+				System.out.println("dailyRainMm: "+dailyRainMm);
+				System.out.println("hourRainMm: "+hourRainMm);
+				
+			}
+		}
 		
 		if(configEntity.getInitialRainMm() !=null) rainEntity = new RainEntity(configEntity.getInitialRainMm());
 		
@@ -117,7 +137,7 @@ public class ProcessBuilderHelper {
 				rainEntity = new RainEntity(weatherStationDataEntity.getRainMm());
 				File rainJsonFolder = new File(rainJsonPath);
 				if(rainJsonFolder == null || !rainJsonFolder.exists()) rainJsonFolder.mkdir();
-				IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+				BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 			}
 			
 			
@@ -127,7 +147,7 @@ public class ProcessBuilderHelper {
 			File pressureFile = new File(pressureJsonFilePath);
 	    	if(pressureFile!=null && pressureFile.exists() && pressureFile.isFile()) {
 	    		try {
-		    		pressureJsonStr = IOHelper.getInstance().readTextFileToString(pressureFile);
+		    		pressureJsonStr = BasicHelper.getInstance().readTextFileToString(pressureFile);
 		    		gson = new Gson();
 		    		PressureEntity pressureEntity = gson.fromJson(pressureJsonStr, PressureEntity.class);
 		    		pressureDbl = pressureEntity.getPressure();
@@ -158,7 +178,7 @@ public class ProcessBuilderHelper {
 				
 				hourRainMm = hourRainMm + rainMM;
 				weatherStationDataEntity.setPastHourRainMM(hourRainMm);
-				rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + hourRainMm;
+				rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + rainMM;
 				dailyRainMm = dailyRainMm + rainMM;
 				weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
 				setRainHourly(hourRainMm, zuluCalHour, rainEntity);
@@ -205,7 +225,7 @@ public class ProcessBuilderHelper {
 					hours = 0;
 					dailyRainMm = 0.0;
 					rainEntity.setInitialRain(rainEntity.getInitialRain()+rainMM);
-					IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+					BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 					
 				}
 			}
@@ -294,7 +314,10 @@ public class ProcessBuilderHelper {
 		default:
 			break;
 		}
-		IOHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+		
+		rainEntity.setLastUpdate();
+		
+		BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 		
 	}
 

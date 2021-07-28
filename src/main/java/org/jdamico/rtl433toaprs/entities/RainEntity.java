@@ -1,9 +1,60 @@
 package org.jdamico.rtl433toaprs.entities;
 
+import java.io.File;
+import java.util.Date;
+
+import org.jdamico.rtl433toaprs.Constants;
+import org.jdamico.rtl433toaprs.helpers.BasicHelper;
+
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class RainEntity {
+	
+	@SerializedName("hour_rain_mm")
+	@Expose
+	private Double hour_rain_mm;
+	
+	@SerializedName("daily_rain_mm")
+	@Expose
+	private Double daily_rain_mm;
+	
+	@SerializedName("rain_mm_since_local_midnight")
+	@Expose
+	private Double rain_mm_since_local_midnight;
+
+	
+	public Double getHour_rain_mm() {
+		return hour_rain_mm == null ? .0 : hour_rain_mm;
+	}
+
+	public void setHour_rain_mm(Double hour_rain_mm) {
+		this.hour_rain_mm = hour_rain_mm;
+	}
+
+	public Double getDaily_rain_mm() {
+		return daily_rain_mm == null ? .0 : daily_rain_mm;
+	}
+
+	public void setDaily_rain_mm(Double daily_rain_mm) {
+		this.daily_rain_mm = daily_rain_mm;
+	}
+
+	public Double getRain_mm_since_local_midnight() {
+		return rain_mm_since_local_midnight == null ? .0 : rain_mm_since_local_midnight;
+	}
+
+	public void setRain_mm_since_local_midnight(Double rain_mm_since_local_midnight) {
+		this.rain_mm_since_local_midnight = rain_mm_since_local_midnight;
+	}
+
+
+
+
+	@SerializedName("last_update")
+	@Expose
+	private String last_update;
 	
 	@SerializedName("initial_rain_mm")
 	@Expose
@@ -11,10 +62,22 @@ public class RainEntity {
 
 	public RainEntity() {
 		super();
+		this.setLastUpdate();
 	}
 	
 	public RainEntity(Double initialRain) {
 		this.initialRain = initialRain;
+		this.setLastUpdate();
+	}
+
+	public Date getLastUpdateDate() throws Exception {
+		return BasicHelper.getInstance().stringToDate(getLast_update(), Constants.JSON_DATETIME_FORMAT);
+	}
+	
+	public static RainEntity fromJsonFile(File rainJsonFile) throws Exception {
+		String jsonStr = BasicHelper.getInstance().readTextFileToString(rainJsonFile);
+		Gson gson = new Gson();
+		return gson.fromJson(jsonStr, RainEntity.class);
 	}
 
 	public Double getInitialRain() {
@@ -316,7 +379,19 @@ public class RainEntity {
 		this.dayRain24 = dayRain24;
 	}
 
+	public String getLast_update() {
+		return last_update;
+	}
 
+	public void setLast_update(String last_update) {
+		this.last_update = last_update;
+	}
+
+
+	public void setLastUpdate() {
+		String lastUpdate = BasicHelper.getInstance().dateToString(new Date(), Constants.JSON_DATETIME_FORMAT);
+		this.setLast_update(lastUpdate);
+	}
 	
 	
 	
