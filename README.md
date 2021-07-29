@@ -4,6 +4,7 @@ Parser of RF Data from Weather Stations to be sent over APRS, written in Java
 ## Dependencies
 - RTL_433 radio transmissions decoder (433Mhz, 868MHz, 915Mhz via rtl_sdr dongles): https://github.com/merbanan/rtl_433
 - ASFK audio modulation/encoding over AX.25 protocol: https://github.com/damico/javAX25
+- GPSD Client: https://github.com/damico/gpsd.client
 
 ## Hardware
 
