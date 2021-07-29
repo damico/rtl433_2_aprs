@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.jdamico.gpsd.client.GpsdClientRuntime;
 import org.jdamico.javax25.soundcard.Soundcard;
 import org.jdamico.rtl433toaprs.entities.ConfigEntity;
-import org.jdamico.rtl433toaprs.helpers.IOHelper;
+import org.jdamico.rtl433toaprs.helpers.BasicHelper;
 import org.jdamico.rtl433toaprs.helpers.ProcessBuilderHelper;
 
 import com.google.gson.Gson;
@@ -65,7 +65,7 @@ public class App {
 
 					String configJsonStr = null;
 					try {
-						configJsonStr = IOHelper.getInstance().readTextFileToString(configFile);
+						configJsonStr = BasicHelper.getInstance().readTextFileToString(configFile);
 						Gson gson = new Gson();
 						configEntity = gson.fromJson(configJsonStr, ConfigEntity.class);
 						try {
@@ -94,11 +94,8 @@ public class App {
 				Soundcard.enumerate();
 				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 				processBuilderHelper.caller();
-
-
-
 			} catch (Exception e) {
-				System.err.println("Error trying to connect to GPSD.");
+				System.err.println("Error trying to connect to call ProcessBuilderHelper.");
 				System.err.println("Exception at Main class: "+e.getMessage());
 				e.printStackTrace();
 			}

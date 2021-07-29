@@ -4,8 +4,9 @@ import java.io.File;
 import java.math.BigDecimal;
 
 import org.jdamico.rtl433toaprs.entities.PressureEntity;
+import org.jdamico.rtl433toaprs.entities.RainEntity;
 import org.jdamico.rtl433toaprs.entities.WeatherStationDataEntity;
-import org.jdamico.rtl433toaprs.helpers.IOHelper;
+import org.jdamico.rtl433toaprs.helpers.BasicHelper;
 
 import com.google.gson.Gson;
 
@@ -55,7 +56,7 @@ public class AppTest
     	
     	File f = new File("dist/pressure.json");
     	if(f !=null && f.exists() && f.isFile()) {
-    		String jsonStr = IOHelper.getInstance().readTextFileToString(f);
+    		String jsonStr = BasicHelper.getInstance().readTextFileToString(f);
     		Gson gson = new Gson();
     		PressureEntity pressureEntity = gson.fromJson(jsonStr, PressureEntity.class);
     		System.out.println(pressureEntity.getPressure()/10);
@@ -65,6 +66,9 @@ public class AppTest
     	Double d = (5/25.4)*100;
     	System.out.println(String.format("%03d" , d.intValue()));
     	
+    	RainEntity rainEntity = new RainEntity();
+    	rainEntity.setLastUpdate();
+    	System.out.println(rainEntity.getLast_update());
     	
         assertTrue( true );
     }

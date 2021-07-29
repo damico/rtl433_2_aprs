@@ -6,21 +6,52 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
-public class IOHelper {
-	
-	private static IOHelper INSTANCE = null;
-	private IOHelper(){}
-	public static IOHelper getInstance(){
-		if(null == INSTANCE) INSTANCE = new IOHelper();
+public class BasicHelper {
+
+	private static BasicHelper INSTANCE = null;
+	private BasicHelper(){}
+	public static BasicHelper getInstance(){
+		if(null == INSTANCE) INSTANCE = new BasicHelper();
 		return INSTANCE;
 	}
+
+	public String dateToString(Date date, String format){
+		String strDate = null;
+		try {
+			SimpleDateFormat formatter = new SimpleDateFormat(format);
+			strDate = formatter.format(date);
+		}catch (NullPointerException e) {}
+		return strDate;
+
+	}
+
+	public Date stringToDate(String dateStr, String format) throws Exception{
+
+		DateFormat dateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
+		Date date = null;
+
+		date = dateFormat.parse(dateStr);
+
+		return date;
+	}
 	
+	public long getDiffHoursBetweenDates(Date init, Date end) {
+		long diff = end.getTime() - init.getTime();
+		diff = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS);
+		return diff;
+	}
+
 	public String readTextFileToString(File source) throws Exception {
 		StringBuffer output = null;
 
-		
+
 
 		if(source != null && source.exists() && source.isFile()) {
 			Path path = source.toPath();
@@ -69,6 +100,15 @@ public class IOHelper {
 					throw new Exception(e);
 				}
 		}	
+	}
+
+	public String listToString(List<String> lst) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < lst.size(); i++) {
+			if(i + 1 == lst.size()) sb.append(lst.get(i));
+			else sb.append(lst.get(i)+", ");
+		}
+		return sb.toString();
 	}
 	
 }
