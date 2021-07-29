@@ -229,7 +229,7 @@ public class ProcessBuilderHelper {
 				
 				
 				if(minutes == 60) {
-					if(localCalHour == 24) rainMmSinceLocalMidnight = .0;
+					if(localCalHour == 0) rainMmSinceLocalMidnight = .0;
 					hourRainMm = .0;
 					minutes = 0;
 					hours++;
@@ -247,7 +247,6 @@ public class ProcessBuilderHelper {
 		}catch (Exception e) {
 			System.err.println("Error calling jsonParser: "+this.getClass().getName());
 			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
-			System.exit(1);
 		}
 
 
