@@ -62,8 +62,8 @@ public class AppTest
     	}
     	
     	
-    	Double d = (50/25.4)*100;
-    	System.out.println(d.intValue());
+    	Double d = (5/25.4)*100;
+    	System.out.println(String.format("%03d" , d.intValue()));
     	
     	
         assertTrue( true );
