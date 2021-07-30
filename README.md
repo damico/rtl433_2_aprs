@@ -7,6 +7,12 @@ Parser of RF Data from Weather Stations to be sent over APRS, written in Java
 - GPSD Client: https://github.com/damico/gpsd.client
 - Adafruit_BMP.BMP085: https://github.com/adafruit/Adafruit_Python_BMP
 
+## Software
+
+### Diagram
+
+![Software Diagram](https://raw.githubusercontent.com/damico/rtl433_2_aprs/main/dist/software-diagram.svg)
+
 ## Hardware
 
 ### Diagram
@@ -16,7 +22,6 @@ Parser of RF Data from Weather Stations to be sent over APRS, written in Java
 ### Prototype
 
 ![Hardware Protorype](https://github.com/damico/rtl433_2_aprs/raw/main/dist/hardware-propotype-01.jpeg)
-
 
 ## Sound Card Troubleshooting
 If you cannot be sure if an encoded APRS data has been sent/audible by your sound card, maybe it is muted or not working through command line interface, in these cases you may find useful run these 2 commands:
