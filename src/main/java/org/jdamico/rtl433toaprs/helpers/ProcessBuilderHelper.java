@@ -229,18 +229,21 @@ public class ProcessBuilderHelper {
 				
 				
 				if(minutes == 60) {
+					
+					rainEntity.rainEntitySetRainUpdateMM(rainEntity.getInitialRain()+rainMM, dailyRainMm, rainMmSinceLocalMidnight, hourRainMm);
+					
 					if(localCalHour == 0) rainMmSinceLocalMidnight = .0;
 					hourRainMm = .0;
 					minutes = 0;
 					hours++;
+					
+					BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+					System.out.println("Updating: "+rainJsonFilePath);
 				}
 				
 				if(hours == 24) {
 					hours = 0;
 					dailyRainMm = 0.0;
-					rainEntity.setInitialRain(rainEntity.getInitialRain()+rainMM);
-					BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
-					
 				}
 			}
 
@@ -251,6 +254,8 @@ public class ProcessBuilderHelper {
 
 
 	}
+
+	
 
 	private void setRainHourly(Double hourRainMm, int calHour, RainEntity rainEntity) throws Exception {
 		switch (calHour) {

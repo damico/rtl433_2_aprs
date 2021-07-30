@@ -392,6 +392,13 @@ public class RainEntity {
 		String lastUpdate = BasicHelper.getInstance().dateToString(new Date(), Constants.JSON_DATETIME_FORMAT);
 		this.setLast_update(lastUpdate);
 	}
+
+	public void rainEntitySetRainUpdateMM(Double initialRain, Double dailyRainMm, Double rainMmSinceLocalMidnight, Double hourRainMm) {
+		setLastUpdate();
+		setDaily_rain_mm(dailyRainMm);
+		setRain_mm_since_local_midnight(rainMmSinceLocalMidnight);
+		setHour_rain_mm(hourRainMm);
+	}
 	
 	
 	
