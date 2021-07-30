@@ -43,13 +43,13 @@ public class App {
 
 			if(args.length == 5 || args.length == 6) {
 				System.out.println("Trying to run by command-line parameters: "+printParams(args));
-				
+
 				Double initialRainMm = null;
-				
+
 				try {
 					if(args.length == 6) initialRainMm = Double.parseDouble(args[5]);
 				} catch (NumberFormatException e) {}
-				
+
 				try {
 					configEntity  = new ConfigEntity(args[0], Double.parseDouble(args[1]), Double.parseDouble(args[2]), Integer.parseInt(args[3]), args[4], initialRainMm);
 				} catch (Exception e) {
@@ -91,13 +91,19 @@ public class App {
 			}
 
 			try {
-				Soundcard.enumerate();
-				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
-				processBuilderHelper.caller();
+				if(configEntity !=null) {
+					Soundcard.enumerate();
+					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
+					processBuilderHelper.caller();
+				}else {
+					System.err.println("Unable to parse configuration params.");
+					System.exit(1);
+				}
 			} catch (Exception e) {
 				System.err.println("Error trying to connect to call ProcessBuilderHelper.");
 				System.err.println("Exception at Main class: "+e.getMessage());
 				e.printStackTrace();
+				System.exit(1);
 			}
 		}
 	}
