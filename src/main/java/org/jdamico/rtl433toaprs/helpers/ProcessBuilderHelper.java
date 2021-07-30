@@ -48,10 +48,11 @@ public class ProcessBuilderHelper {
 	private Double dailyRainMm = .0;
 	private int zuluCalHour;
 	private String stationName;
+	private String rtl433Cli;
 
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
-
+		
 		gson = new Gson();
 		rainJsonFile = new File(rainJsonFilePath);
 		if(rainJsonFile != null && rainJsonFile.exists() && rainJsonFile.isFile()) {
@@ -60,8 +61,6 @@ public class ProcessBuilderHelper {
 			long diffHoursFromLastUpdate = BasicHelper.getInstance().getDiffHoursBetweenDates(rainEntity.getLastUpdateDate(), new Date());
 			if(diffHoursFromLastUpdate > Constants.LAST_UPDATE_LIMIT) rainJsonFile.delete();
 			else {
-				
-				
 				
 				rainMmSinceLocalMidnight = rainEntity.getRain_mm_since_local_midnight();
 				dailyRainMm = rainEntity.getDaily_rain_mm();
@@ -75,6 +74,7 @@ public class ProcessBuilderHelper {
 			}
 		}
 		
+		if(configEntity.getRtl433Cli() != null) rtl433Cli = configEntity.getRtl433Cli();
 		if(configEntity.getInitialRainMm() !=null) rainEntity = new RainEntity(configEntity.getInitialRainMm());
 		if(configEntity.getStationName() !=null) stationName = configEntity.getStationName();
 		else stationName = Constants.APP_NAME;
@@ -103,13 +103,14 @@ public class ProcessBuilderHelper {
 	}
 
 	public void caller() {
-		List<String> rtl_cli = new ArrayList<String>();
 		
-		rtl_cli.add("rtl_433");
-		rtl_cli.add("-F");
-		rtl_cli.add("json");
-		
-		System.out.println("Calling rtl_433...("+BasicHelper.getInstance().listToString(rtl_cli)+")");
+		List<String> rtl_cli = null;
+		if(rtl433Cli == null) {
+			rtl433Cli = Constants.DEFAULT_RTL_433_CLI;
+			System.out.println("Using: DEFAULT_RTL_433_CLI.");
+		}else System.out.println("Using: rtl_433_cli from config.");
+		rtl_cli = BasicHelper.getInstance().stringToListCli(rtl433Cli);
+		System.out.println("Calling rtl_433...("+rtl433Cli+")");
 		ProcessBuilder processBuilder = new ProcessBuilder();
 		processBuilder.command(rtl_cli);
 

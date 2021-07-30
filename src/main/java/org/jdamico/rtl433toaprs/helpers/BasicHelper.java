@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -109,6 +110,16 @@ public class BasicHelper {
 			else sb.append(lst.get(i)+", ");
 		}
 		return sb.toString();
+	}
+	
+	public List<String> stringToListCli(String defaultRtl433Cli) {
+		List<String> lst = new ArrayList<String>();
+		defaultRtl433Cli = defaultRtl433Cli.replaceAll("  ", " ");
+		String[] rtlStrArray = defaultRtl433Cli.split(" ");
+		for (String cliPart : rtlStrArray) {
+			lst.add(cliPart);
+		}
+		return lst;
 	}
 	
 }

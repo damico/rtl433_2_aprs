@@ -5,7 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 
 /*
- * {
+ * 
+ 
+ {
 	"callsign": "",
 	"decimal_lat": 1,
 	"decimal_lng": 1,
@@ -13,13 +15,21 @@ import com.google.gson.annotations.SerializedName;
 	"soundcard_name": "",
 	"initial_rain_mm": 1,
 	"gpsd_host": "",
-	"gpsd_port": ""
+	"gpsd_port": "",
+	"station_name": "SciCrop SE-2900",
+	"rtl_433_cli": "/usr/local/bin/rtl_433 -F json"
 }
+ 
  * 
  */
 
 public class ConfigEntity {
 
+	@SerializedName("rtl_433_cli")
+	@Expose
+	private String rtl433Cli;
+	
+	
 	@SerializedName("station_name")
 	@Expose
 	private String stationName;
@@ -147,6 +157,14 @@ public class ConfigEntity {
 
 	public void setStationName(String stationName) {
 		this.stationName = stationName;
+	}
+
+	public String getRtl433Cli() {
+		return rtl433Cli;
+	}
+
+	public void setRtl433Cli(String rtl433Cli) {
+		this.rtl433Cli = rtl433Cli;
 	}
 
 }

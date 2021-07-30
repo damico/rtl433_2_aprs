@@ -7,5 +7,6 @@
 	"initial_rain_mm": 1,
 	"gpsd_host": "",
 	"gpsd_port": "",
-	"station_name": "SciCrop SE-2900"
+	"station_name": "SciCrop SE-2900",
+	"rtl_433_cli": "/usr/local/bin/rtl_433 -F json"
 }
