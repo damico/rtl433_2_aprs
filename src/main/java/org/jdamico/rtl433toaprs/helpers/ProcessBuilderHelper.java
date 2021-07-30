@@ -194,6 +194,7 @@ public class ProcessBuilderHelper {
 				rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + rainMM;
 				dailyRainMm = dailyRainMm + rainMM;
 				weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
+				rainEntity.rainEntitySetRainUpdateMM(rainEntity.getInitialRain()+rainMM, dailyRainMm, rainMmSinceLocalMidnight, hourRainMm);
 				setRainHourly(hourRainMm, zuluCalHour, rainEntity);
 				
 				weatherStationDataEntity.setRainMm(dailyRainMm);		
@@ -229,7 +230,7 @@ public class ProcessBuilderHelper {
 				
 				
 				if(minutes == 60) {
-					if(localCalHour == 24) rainMmSinceLocalMidnight = .0;
+					if(localCalHour == 0) rainMmSinceLocalMidnight = .0;
 					hourRainMm = .0;
 					minutes = 0;
 					hours++;
@@ -238,20 +239,18 @@ public class ProcessBuilderHelper {
 				if(hours == 24) {
 					hours = 0;
 					dailyRainMm = 0.0;
-					rainEntity.setInitialRain(rainEntity.getInitialRain()+rainMM);
-					BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
-					
 				}
 			}
 
 		}catch (Exception e) {
 			System.err.println("Error calling jsonParser: "+this.getClass().getName());
 			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
-			System.exit(1);
 		}
 
 
 	}
+
+	
 
 	private void setRainHourly(Double hourRainMm, int calHour, RainEntity rainEntity) throws Exception {
 		switch (calHour) {
@@ -334,6 +333,7 @@ public class ProcessBuilderHelper {
 		rainEntity.setLastUpdate();
 		
 		BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+		System.out.println("Updating: "+rainJsonFilePath);
 		
 	}
 
