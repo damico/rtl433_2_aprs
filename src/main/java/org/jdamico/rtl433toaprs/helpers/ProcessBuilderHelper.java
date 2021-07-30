@@ -74,7 +74,10 @@ public class ProcessBuilderHelper {
 			}
 		}
 		
-		if(configEntity.getRtl433Cli() != null) rtl433Cli = configEntity.getRtl433Cli();
+		if(configEntity.getRtl433Cli() != null || 
+				(!configEntity.getRtl433Cli().toLowerCase().contains("rtl_433") 
+				&& !configEntity.getRtl433Cli().toLowerCase().contains("-f")
+				&& !configEntity.getRtl433Cli().toLowerCase().contains("json"))) rtl433Cli = configEntity.getRtl433Cli();
 		if(configEntity.getInitialRainMm() !=null) rainEntity = new RainEntity(configEntity.getInitialRainMm());
 		if(configEntity.getStationName() !=null) stationName = configEntity.getStationName();
 		else stationName = Constants.APP_NAME;
