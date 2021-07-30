@@ -194,6 +194,7 @@ public class ProcessBuilderHelper {
 				rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + rainMM;
 				dailyRainMm = dailyRainMm + rainMM;
 				weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
+				rainEntity.rainEntitySetRainUpdateMM(rainEntity.getInitialRain()+rainMM, dailyRainMm, rainMmSinceLocalMidnight, hourRainMm);
 				setRainHourly(hourRainMm, zuluCalHour, rainEntity);
 				
 				weatherStationDataEntity.setRainMm(dailyRainMm);		
@@ -229,16 +230,10 @@ public class ProcessBuilderHelper {
 				
 				
 				if(minutes == 60) {
-					
-					rainEntity.rainEntitySetRainUpdateMM(rainEntity.getInitialRain()+rainMM, dailyRainMm, rainMmSinceLocalMidnight, hourRainMm);
-					
 					if(localCalHour == 0) rainMmSinceLocalMidnight = .0;
 					hourRainMm = .0;
 					minutes = 0;
 					hours++;
-					
-					BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
-					System.out.println("Updating: "+rainJsonFilePath);
 				}
 				
 				if(hours == 24) {
@@ -338,6 +333,7 @@ public class ProcessBuilderHelper {
 		rainEntity.setLastUpdate();
 		
 		BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
+		System.out.println("Updating: "+rainJsonFilePath);
 		
 	}
 
