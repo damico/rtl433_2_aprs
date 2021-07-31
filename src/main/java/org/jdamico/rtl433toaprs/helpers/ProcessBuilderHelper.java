@@ -2,6 +2,7 @@ package org.jdamico.rtl433toaprs.helpers;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,10 +57,10 @@ public class ProcessBuilderHelper {
 
 		if(configEntity.getRunningPath() != null) baseAppPath = configEntity.getRunningPath()+"/dist/";
 		else baseAppPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/dist/";
-		
+
 		rainJsonFilePath = baseAppPath+"rain.json";
 		pressureJsonFilePath = baseAppPath+"pressure.json";
-		
+
 		System.out.println("baseAppPath: "+baseAppPath);
 
 		gson = new Gson();
@@ -166,11 +167,14 @@ public class ProcessBuilderHelper {
 			inputStreamReader = new InputStreamReader(process.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
 			String line = null;
-			while ((line = reader.readLine()) != null) {
-				System.out.println("Return from RTL_433: "+line);
-				jsonParser(latitude, longitude, tz, line);
+			while(line == null) {
+				while ((line = reader.readLine()) != null) {
+					System.out.println("Return from RTL_433: "+line);
+					jsonParser(latitude, longitude, tz, line);
+				}
+				System.out.println("-------");
+				Thread.sleep(1000);
 			}
-			process.waitFor();
 
 			if (process.exitValue() != 0) {
 				System.out.println("Looking for possible errors calling RTL_433...");
@@ -180,7 +184,7 @@ public class ProcessBuilderHelper {
 					System.err.println("Error Return from RTL_433: "+line);
 				}
 			}
-
+			process.waitFor();
 
 
 		} catch (Exception e) {
@@ -299,7 +303,7 @@ public class ProcessBuilderHelper {
 
 		}catch (IllegalStateException e) {
 			System.out.println("No json output: "+jsonStr);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.err.println("Error calling jsonParser: "+this.getClass().getName());
 			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
 		}
@@ -309,7 +313,7 @@ public class ProcessBuilderHelper {
 
 
 
-	private void setRainHourly(Double hourRainMm, int calHour, RainEntity rainEntity) throws Exception {
+	private void setRainHourly(Double hourRainMm, int calHour, RainEntity rainEntity) throws IOException {
 		switch (calHour) {
 		case 1:
 			rainEntity.setDayRain1(hourRainMm);

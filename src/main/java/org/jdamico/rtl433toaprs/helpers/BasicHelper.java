@@ -46,7 +46,7 @@ public class BasicHelper {
 
 		return date;
 	}
-	
+
 	public long getDiffHoursBetweenDates(Date init, Date end) {
 		long diff = end.getTime() - init.getTime();
 		diff = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS);
@@ -76,7 +76,7 @@ public class BasicHelper {
 		return output.toString();
 	}
 
-	public void writeStrToFile(String str, String fileName) throws Exception{
+	public void writeStrToFile(String str, String fileName) throws IOException{
 
 		FileWriter fw = null;
 		BufferedWriter out = null;
@@ -84,26 +84,15 @@ public class BasicHelper {
 			fw = new FileWriter(fileName);
 			out = new BufferedWriter(fw);
 			out.write(str);  
-		}
-		catch (IOException e)
-		{
-			throw new Exception(e);
-
-		}
-		finally
-		{
+		}finally{
 			if(out != null)
-				try {
-					out.close();
-				} catch (IOException e) {
-					throw new Exception(e);
-				}
+
+				out.close();
+
 			if(fw != null)
-				try {
-					fw.close();
-				} catch (IOException e) {
-					throw new Exception(e);
-				}
+
+				fw.close();
+
 		}	
 	}
 
@@ -115,7 +104,7 @@ public class BasicHelper {
 		}
 		return sb.toString();
 	}
-	
+
 	public List<String> stringToListCli(String defaultRtl433Cli) {
 		List<String> lst = new ArrayList<String>();
 		defaultRtl433Cli = defaultRtl433Cli.replaceAll("  ", " ");
@@ -125,14 +114,14 @@ public class BasicHelper {
 		}
 		return lst;
 	}
-	
+
 	public String getAbsoluteRunningPath() {
 		Path currentRelativePath = Paths.get("");
-    	return currentRelativePath.toAbsolutePath().toString();
+		return currentRelativePath.toAbsolutePath().toString();
 	}
-	
+
 	public String getAbsoluteMainJarPath() throws URISyntaxException {
 		return new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
 	}
-	
+
 }
