@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import org.jdamico.rtl433toaprs.App;
 
 public class BasicHelper {
 
@@ -126,6 +129,10 @@ public class BasicHelper {
 	public String getAbsoluteRunningPath() {
 		Path currentRelativePath = Paths.get("");
     	return currentRelativePath.toAbsolutePath().toString();
+	}
+	
+	public String getAbsoluteMainJarPath() throws URISyntaxException {
+		return new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
 	}
 	
 }
