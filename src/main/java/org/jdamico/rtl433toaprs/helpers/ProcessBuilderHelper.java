@@ -52,34 +52,34 @@ public class ProcessBuilderHelper {
 
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
-		
-		
+
+
 		if(configEntity.getRunningPath() != null) baseAppPath = configEntity.getRunningPath()+"/dist/";
 		else baseAppPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/dist/";
-		
+
 		System.out.println("baseAppPath: "+baseAppPath);
-		
+
 		gson = new Gson();
 		rainJsonFile = new File(rainJsonFilePath);
 		if(rainJsonFile != null && rainJsonFile.exists() && rainJsonFile.isFile()) {
-			
+
 			rainEntity = RainEntity.fromJsonFile(rainJsonFile);
 			long diffHoursFromLastUpdate = BasicHelper.getInstance().getDiffHoursBetweenDates(rainEntity.getLastUpdateDate(), new Date());
 			if(diffHoursFromLastUpdate > Constants.LAST_UPDATE_LIMIT) rainJsonFile.delete();
 			else {
-				
+
 				rainMmSinceLocalMidnight = rainEntity.getRain_mm_since_local_midnight();
 				dailyRainMm = rainEntity.getDaily_rain_mm();
 				hourRainMm = rainEntity.getHour_rain_mm();
-				
+
 				System.out.println("Hours from lastUpdate: "+diffHoursFromLastUpdate+" | Recovering saved data: ");
 				System.out.println("rainMmSinceLocalMidnight: "+rainMmSinceLocalMidnight);
 				System.out.println("dailyRainMm: "+dailyRainMm);
 				System.out.println("hourRainMm: "+hourRainMm);
-				
+
 			}
 		}
-		
+
 		if(configEntity.getRtl433Cli() != null 
 				&& configEntity.getRtl433Cli().toLowerCase().contains("rtl_433") 
 				&& configEntity.getRtl433Cli().toLowerCase().contains("-f")
@@ -87,9 +87,9 @@ public class ProcessBuilderHelper {
 		if(configEntity.getInitialRainMm() !=null) rainEntity = new RainEntity(configEntity.getInitialRainMm());
 		if(configEntity.getStationName() !=null) stationName = configEntity.getStationName();
 		else stationName = Constants.APP_NAME;
-		
+
 		soundcardName = configEntity.getSoundcardName();
-		
+
 		PacketDemodulator multi = null;
 
 		try {
@@ -106,13 +106,13 @@ public class ProcessBuilderHelper {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
+
 
 
 	}
-	
+
 	public void rtlTestCaller() {
-		
+
 		System.out.println("Calling rtl_test...("+Constants.DEFAULT_RTL_TEST_CLI+")");
 		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(BasicHelper.getInstance().stringToListCli(Constants.DEFAULT_RTL_TEST_CLI));
 
@@ -144,6 +144,8 @@ public class ProcessBuilderHelper {
 	}
 
 	public void rtl433Caller() {
+
+		Thread outWriterThread = null;
 		
 		List<String> rtl_cli = null;
 		if(rtl433Cli == null) {
@@ -160,24 +162,28 @@ public class ProcessBuilderHelper {
 		try {
 
 			process = processBuilder.start();
-			inputStreamReader = new InputStreamReader(process.getInputStream());
-			reader = new BufferedReader(inputStreamReader);
-			String line;
-			while ((line = reader.readLine()) != null) {
-				System.out.println("Return from RTL_433: "+line);
-				jsonParser(latitude, longitude, tz, line);
-			}
+			outWriterThread = new ProcessStreamThread(process.getInputStream());
+			outWriterThread.start();
+//			inputStreamReader = new InputStreamReader(process.getInputStream());
+//			reader = new BufferedReader(inputStreamReader);
+//			String line;
+//			while ((line = reader.readLine()) != null) {
+//				System.out.println("Return from RTL_433: "+line);
+//				jsonParser(latitude, longitude, tz, line);
+//			}
+//			
+//			process.waitFor();
+//			
+//			if (process.exitValue() != 0) {
+//				System.out.println("Looking for possible errors calling RTL_433...");
+//				inputStreamReader = new InputStreamReader(process.getErrorStream());
+//				reader = new BufferedReader(inputStreamReader);
+//				while ((line = reader.readLine()) != null) {
+//					System.err.println("Error Return from RTL_433: "+line);
+//				}
+//			}
+//			
 
-			System.out.println("Looking for possible errors calling RTL_433...");
-			
-			inputStreamReader = new InputStreamReader(process.getErrorStream());
-			reader = new BufferedReader(inputStreamReader);
-			while ((line = reader.readLine()) != null) {
-				System.err.println("Error Return from RTL_433: "+line);
-				//jsonParser(latitude, longitude, tz, line);
-			}
-			process.waitFor();
-			
 
 		} catch (Exception e) {
 			System.err.println("Error calling : "+this.getClass().getName());
@@ -196,31 +202,31 @@ public class ProcessBuilderHelper {
 		try {
 
 			WeatherStationDataEntity weatherStationDataEntity = gson.fromJson(jsonStr, WeatherStationDataEntity.class);
-			
+
 			if(rainEntity == null) {
 				rainEntity = new RainEntity(weatherStationDataEntity.getRainMm());
 				File rainJsonFolder = new File(baseAppPath);
 				if(rainJsonFolder == null || !rainJsonFolder.exists()) rainJsonFolder.mkdir();
 				BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 			}
-			
-			
+
+
 			String pressureValue = "...";
 			Double pressureDbl = null; 
 			String pressureJsonStr = null;
 			File pressureFile = new File(pressureJsonFilePath);
-	    	if(pressureFile!=null && pressureFile.exists() && pressureFile.isFile()) {
-	    		try {
-		    		pressureJsonStr = BasicHelper.getInstance().readTextFileToString(pressureFile);
-		    		gson = new Gson();
-		    		PressureEntity pressureEntity = gson.fromJson(pressureJsonStr, PressureEntity.class);
-		    		pressureDbl = pressureEntity.getPressure();
-		    		pressureEntity.setPressure(pressureDbl/10);
-		    		pressureValue = String.format("%05d" , pressureEntity.getPressure().intValue());
-	    		}catch (Exception e) {
-	    			System.out.println("Exception: "+e.getMessage()+ " | pressureFile.getAbsolutePath(): "+pressureFile.getAbsolutePath()+" | pressureJsonStr: "+pressureJsonStr+" | pressureDbl: "+pressureDbl);
+			if(pressureFile!=null && pressureFile.exists() && pressureFile.isFile()) {
+				try {
+					pressureJsonStr = BasicHelper.getInstance().readTextFileToString(pressureFile);
+					gson = new Gson();
+					PressureEntity pressureEntity = gson.fromJson(pressureJsonStr, PressureEntity.class);
+					pressureDbl = pressureEntity.getPressure();
+					pressureEntity.setPressure(pressureDbl/10);
+					pressureValue = String.format("%05d" , pressureEntity.getPressure().intValue());
+				}catch (Exception e) {
+					System.out.println("Exception: "+e.getMessage()+ " | pressureFile.getAbsolutePath(): "+pressureFile.getAbsolutePath()+" | pressureJsonStr: "+pressureJsonStr+" | pressureDbl: "+pressureDbl);
 				}
-	    	}else System.out.println("No pressure json file found at: "+pressureFile.getAbsolutePath());
+			}else System.out.println("No pressure json file found at: "+pressureFile.getAbsolutePath());
 
 
 			Date now = new Date();
@@ -239,7 +245,7 @@ public class ProcessBuilderHelper {
 					System.out.println("Raining: "+rainMM+" | "+weatherStationDataEntity.getRainMm()+" | "+rainEntity.getInitialRain());
 					rainEntity.setInitialRain(weatherStationDataEntity.getRainMm());
 				}
-				
+
 				hourRainMm = hourRainMm + rainMM;
 				weatherStationDataEntity.setPastHourRainMM(hourRainMm);
 				rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + rainMM;
@@ -247,18 +253,18 @@ public class ProcessBuilderHelper {
 				weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
 				rainEntity.rainEntitySetRainUpdateMM(rainEntity.getInitialRain()+rainMM, dailyRainMm, rainMmSinceLocalMidnight, hourRainMm);
 				setRainHourly(hourRainMm, zuluCalHour, rainEntity);
-				
+
 				weatherStationDataEntity.setRainMm(dailyRainMm);		
 				weatherStationDataEntity = weatherStationDataEntity.toImperial();
-				
+
 				System.out.println("RainHourly: "+hourRainMm+" | "+zuluCalHour + " | "+weatherStationDataEntity.getRainIn().intValue());
-				
+
 				if(VerifierThread.X != null && VerifierThread.Y != null) {
 					longitude = VerifierThread.X;
 					latitude = VerifierThread.Y;
 					System.out.println("Position updated by GPSD Client.");
 				}
-				
+
 				cal.add(Calendar.HOUR_OF_DAY, tz);
 				zuluCalHour = cal.get(Calendar.HOUR_OF_DAY);
 				String complete_weather_data = (
@@ -278,15 +284,15 @@ public class ProcessBuilderHelper {
 						+stationName.substring(0, stationName.length() >= 36 ? 36: stationName.length()));
 
 				sendPacket(complete_weather_data, soundcardName);
-				
-				
+
+
 				if(minutes == 60) {
 					if(localCalHour == 0) rainMmSinceLocalMidnight = .0;
 					hourRainMm = .0;
 					minutes = 0;
 					hours++;
 				}
-				
+
 				if(hours == 24) {
 					hours = 0;
 					dailyRainMm = 0.0;
@@ -301,7 +307,7 @@ public class ProcessBuilderHelper {
 
 	}
 
-	
+
 
 	private void setRainHourly(Double hourRainMm, int calHour, RainEntity rainEntity) throws Exception {
 		switch (calHour) {
@@ -380,12 +386,12 @@ public class ProcessBuilderHelper {
 		default:
 			break;
 		}
-		
+
 		rainEntity.setLastUpdate();
-		
+
 		BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 		System.out.println("Updating: "+rainJsonFilePath);
-		
+
 	}
 
 	private void sendPacket(String complete_weather_data, String soundcardName) {
