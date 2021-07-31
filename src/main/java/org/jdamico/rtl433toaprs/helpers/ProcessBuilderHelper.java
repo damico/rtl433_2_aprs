@@ -160,7 +160,6 @@ public class ProcessBuilderHelper {
 		try {
 
 			process = processBuilder.start();
-			process.waitFor();
 			inputStreamReader = new InputStreamReader(process.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
 			String line;
@@ -177,7 +176,7 @@ public class ProcessBuilderHelper {
 				System.err.println("Error Return from RTL_433: "+line);
 				//jsonParser(latitude, longitude, tz, line);
 			}
-			
+			process.waitFor();
 			
 
 		} catch (Exception e) {
