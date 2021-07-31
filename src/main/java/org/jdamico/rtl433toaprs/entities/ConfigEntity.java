@@ -29,6 +29,10 @@ public class ConfigEntity {
 	@Expose
 	private String rtl433Cli;
 	
+	@SerializedName("running_path")
+	@Expose
+	private String runningPath;
+	
 	
 	@SerializedName("station_name")
 	@Expose
@@ -165,6 +169,14 @@ public class ConfigEntity {
 
 	public void setRtl433Cli(String rtl433Cli) {
 		this.rtl433Cli = rtl433Cli;
+	}
+
+	public String getRunningPath() {
+		return runningPath;
+	}
+
+	public void setRunningPath(String runningPath) {
+		this.runningPath = runningPath;
 	}
 
 }

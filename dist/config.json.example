@@ -8,5 +8,6 @@
 	"gpsd_host": "",
 	"gpsd_port": "",
 	"station_name": "SciCrop SE-2900",
-	"rtl_433_cli": "/usr/local/bin/rtl_433 -F json"
+	"rtl_433_cli": "/usr/local/bin/rtl_433 -F json",
+	"running_path": "/opt/rtl433toaprs"
 }

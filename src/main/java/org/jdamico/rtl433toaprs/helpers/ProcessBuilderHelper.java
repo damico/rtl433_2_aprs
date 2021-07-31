@@ -53,7 +53,9 @@ public class ProcessBuilderHelper {
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
 		
-		baseAppPath = BasicHelper.getInstance().getAbsoluteMainJarPath()+"/dist/";
+		
+		if(configEntity.getRunningPath() != null) baseAppPath = configEntity.getRunningPath()+"/dist/";
+		else baseAppPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/dist/";
 		
 		System.out.println("baseAppPath: "+baseAppPath);
 		
