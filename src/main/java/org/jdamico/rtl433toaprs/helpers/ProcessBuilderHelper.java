@@ -114,8 +114,7 @@ public class ProcessBuilderHelper {
 	public void rtlTestCaller() {
 		
 		System.out.println("Calling rtl_test...("+Constants.DEFAULT_RTL_TEST_CLI+")");
-		ProcessBuilder processBuilder = new ProcessBuilder();
-		processBuilder.command(BasicHelper.getInstance().stringToListCli(Constants.DEFAULT_RTL_TEST_CLI));
+		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(BasicHelper.getInstance().stringToListCli(Constants.DEFAULT_RTL_TEST_CLI));
 
 		InputStreamReader inputStreamReader = null;
 		BufferedReader reader = null;
