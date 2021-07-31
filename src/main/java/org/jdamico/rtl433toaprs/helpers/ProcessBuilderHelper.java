@@ -173,7 +173,7 @@ public class ProcessBuilderHelper {
 					try {
 					jsonParser(latitude, longitude, tz, line);
 					}catch (Exception e) {
-						// TODO: handle exception
+						e.printStackTrace();
 					}
 				}
 				System.out.println("-------");
