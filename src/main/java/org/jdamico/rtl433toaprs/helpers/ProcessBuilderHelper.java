@@ -166,8 +166,8 @@ public class ProcessBuilderHelper {
 			process = processBuilder.start();
 			inputStreamReader = new InputStreamReader(process.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
-			String line;
-
+			String line = null;
+			while(line == null) {
 			while ((line = reader.readLine()) != null) {
 				System.out.println("Return from RTL_433: "+line);
 				try {
@@ -175,6 +175,9 @@ public class ProcessBuilderHelper {
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
+			}
+		Thread.sleep(1000);
+		System.out.println("--------------------------");
 			}
 
 			if (process.exitValue() != 0) {
