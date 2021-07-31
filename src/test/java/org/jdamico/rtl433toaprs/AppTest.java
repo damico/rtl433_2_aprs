@@ -1,7 +1,8 @@
 package org.jdamico.rtl433toaprs;
 
 import java.io.File;
-import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.jdamico.rtl433toaprs.entities.PressureEntity;
 import org.jdamico.rtl433toaprs.entities.RainEntity;
@@ -69,6 +70,9 @@ public class AppTest
     	RainEntity rainEntity = new RainEntity();
     	rainEntity.setLastUpdate();
     	System.out.println(rainEntity.getLast_update());
+    	
+    	
+    	
     	
         assertTrue( true );
     }

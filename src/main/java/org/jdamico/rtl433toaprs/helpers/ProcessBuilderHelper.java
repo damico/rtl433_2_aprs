@@ -33,7 +33,7 @@ public class ProcessBuilderHelper {
 	private static int hours = 0;
 	private static int lastMinute = 0;
 	private Double hourRainMm = .0;
-	private static final String baseAppPath = System.getProperty("user.dir")+"/dist/";
+	private static String baseAppPath;
 	private static final String rainJsonFilePath = baseAppPath+"rain.json";
 	private static final String pressureJsonFilePath = baseAppPath+"pressure.json";
 	private Double latitude; 
@@ -52,6 +52,8 @@ public class ProcessBuilderHelper {
 
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
+		
+		baseAppPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/dist/";
 		
 		System.out.println("baseAppPath: "+baseAppPath);
 		
