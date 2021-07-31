@@ -34,8 +34,8 @@ public class ProcessBuilderHelper {
 	private static int lastMinute = 0;
 	private Double hourRainMm = .0;
 	private static String baseAppPath;
-	private static final String rainJsonFilePath = baseAppPath+"rain.json";
-	private static final String pressureJsonFilePath = baseAppPath+"pressure.json";
+	private static String rainJsonFilePath;
+	private static String pressureJsonFilePath;
 	private Double latitude; 
 	private Double longitude; 
 	private Integer tz;
@@ -56,7 +56,10 @@ public class ProcessBuilderHelper {
 
 		if(configEntity.getRunningPath() != null) baseAppPath = configEntity.getRunningPath()+"/dist/";
 		else baseAppPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/dist/";
-
+		
+		rainJsonFilePath = baseAppPath+"rain.json";
+		pressureJsonFilePath = baseAppPath+"pressure.json";
+		
 		System.out.println("baseAppPath: "+baseAppPath);
 
 		gson = new Gson();
@@ -162,31 +165,24 @@ public class ProcessBuilderHelper {
 		try {
 
 			process = processBuilder.start();
-			//outWriterThread = new ProcessStreamThread(process.getInputStream());
-			//outWriterThread.start();
-			//process.waitFor();
 			inputStreamReader = new InputStreamReader(process.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
 			String line = null;
-			while (line == null) {
-				while ((line = reader.readLine()) != null) {
-					System.out.println("---- Return from RTL_433: "+line);
-					jsonParser(latitude, longitude, tz, line);
-				}
-				System.out.println(";;;;;;;;;;;;;;;;;;;");
-				Thread.sleep(1000);
+			while ((line = reader.readLine()) != null) {
+				System.out.println("Return from RTL_433: "+line);
+				jsonParser(latitude, longitude, tz, line);
 			}
 			process.waitFor();
-			//			
-			//			if (process.exitValue() != 0) {
-			//				System.out.println("Looking for possible errors calling RTL_433...");
-			//				inputStreamReader = new InputStreamReader(process.getErrorStream());
-			//				reader = new BufferedReader(inputStreamReader);
-			//				while ((line = reader.readLine()) != null) {
-			//					System.err.println("Error Return from RTL_433: "+line);
-			//				}
-			//			}
-			//			
+
+			if (process.exitValue() != 0) {
+				System.out.println("Looking for possible errors calling RTL_433...");
+				inputStreamReader = new InputStreamReader(process.getErrorStream());
+				reader = new BufferedReader(inputStreamReader);
+				while ((line = reader.readLine()) != null) {
+					System.err.println("Error Return from RTL_433: "+line);
+				}
+			}
+
 
 
 		} catch (Exception e) {
