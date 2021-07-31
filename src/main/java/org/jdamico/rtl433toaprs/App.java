@@ -94,7 +94,7 @@ public class App {
 				if(configEntity !=null) {
 					Soundcard.enumerate();
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
-					processBuilderHelper.caller();
+					processBuilderHelper.rtl433Caller();
 				}else {
 					System.err.println("Unable to parse configuration params.");
 					System.exit(1);

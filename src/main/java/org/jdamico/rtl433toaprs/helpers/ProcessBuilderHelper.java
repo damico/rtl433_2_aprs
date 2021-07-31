@@ -110,8 +110,41 @@ public class ProcessBuilderHelper {
 
 
 	}
+	
+	public void rtlTestCaller() {
+		
+		System.out.println("Calling rtl_test...("+Constants.DEFAULT_RTL_TEST_CLI+")");
+		ProcessBuilder processBuilder = new ProcessBuilder();
+		processBuilder.command(BasicHelper.getInstance().stringToListCli(Constants.DEFAULT_RTL_TEST_CLI));
 
-	public void caller() {
+		InputStreamReader inputStreamReader = null;
+		BufferedReader reader = null;
+		Process process = null;
+		try {
+
+			process = processBuilder.start();
+			inputStreamReader = new InputStreamReader(process.getInputStream());
+			reader = new BufferedReader(inputStreamReader);
+			String line;
+			while ((line = reader.readLine()) != null) {
+				System.out.println("Return from RTL_TEST: "+line);
+				//jsonParser(latitude, longitude, tz, line);
+			}
+
+
+		} catch (Exception e) {
+			System.err.println("Error calling : "+this.getClass().getName());
+			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
+			System.exit(1);
+
+		}finally {
+			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
+			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
+			if(process!=null) process.destroy();
+		}
+	}
+
+	public void rtl433Caller() {
 		
 		List<String> rtl_cli = null;
 		if(rtl433Cli == null) {
