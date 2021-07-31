@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +22,7 @@ import org.jdamico.rtl433toaprs.entities.RainEntity;
 import org.jdamico.rtl433toaprs.entities.WeatherStationDataEntity;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 public class ProcessBuilderHelper {
 
@@ -166,18 +166,15 @@ public class ProcessBuilderHelper {
 			process = processBuilder.start();
 			inputStreamReader = new InputStreamReader(process.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
-			String line = null;
-			while(line == null) {
-				while ((line = reader.readLine()) != null) {
-					System.out.println("Return from RTL_433: "+line);
-					try {
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				System.out.println("Return from RTL_433: "+line);
+				try {
 					jsonParser(latitude, longitude, tz, line);
-					}catch (Exception e) {
-						e.printStackTrace();
-					}
+				}catch (Exception e) {
+					e.printStackTrace();
 				}
-				System.out.println("-------");
-				Thread.sleep(1000);
 			}
 
 			if (process.exitValue() != 0) {
@@ -305,7 +302,7 @@ public class ProcessBuilderHelper {
 				}
 			}
 
-		}catch (IllegalStateException e) {
+		}catch (JsonSyntaxException e) {
 			System.out.println("No json output: "+jsonStr);
 		} catch (IOException e) {
 			System.err.println("Error calling jsonParser: "+this.getClass().getName());
