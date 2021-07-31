@@ -148,8 +148,6 @@ public class ProcessBuilderHelper {
 
 	public void rtl433Caller() {
 
-		Thread outWriterThread = null;
-
 		List<String> rtl_cli = null;
 		if(rtl433Cli == null) {
 			rtl433Cli = Constants.DEFAULT_RTL_433_CLI;
@@ -299,7 +297,9 @@ public class ProcessBuilderHelper {
 				}
 			}
 
-		}catch (Exception e) {
+		}catch (IllegalStateException e) {
+			System.out.println("No json output: "+jsonStr);
+		} catch (Exception e) {
 			System.err.println("Error calling jsonParser: "+this.getClass().getName());
 			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
 		}
