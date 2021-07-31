@@ -50,7 +50,13 @@ public class ProcessBuilderHelper {
 	private int zuluCalHour;
 	private String stationName;
 	private String rtl433Cli;
+	public static boolean rtl433Fine = false;
+	private Process rtlProcess;
+	
 
+	public Process getRtlProcess() {
+		return rtlProcess;
+	}
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
 
@@ -160,35 +166,34 @@ public class ProcessBuilderHelper {
 		processBuilder.redirectErrorStream(true);
 		InputStreamReader inputStreamReader = null;
 		BufferedReader reader = null;
-		Process process = null;
+		
 		try {
 
-			process = processBuilder.start();
-			inputStreamReader = new InputStreamReader(process.getInputStream());
+			this.rtlProcess = processBuilder.start();
+			inputStreamReader = new InputStreamReader(rtlProcess.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
 			String line = null;
-			while(line == null) {
-				while ((line = reader.readLine()) != null) {
-					System.out.println("Return from RTL_433: "+line);
-					try {
-						jsonParser(latitude, longitude, tz, line);
-					}catch (Exception e) {
-						e.printStackTrace();
-					}
+
+			while ((line = reader.readLine()) != null) {
+				System.out.println("Return from RTL_433: "+line);
+				try {
+					jsonParser(latitude, longitude, tz, line);
+				}catch (Exception e) {
+					e.printStackTrace();
 				}
-				Thread.sleep(1000);
-				System.out.println("--------------------------");
 			}
 
-			if (process.exitValue() != 0) {
+
+
+			if (rtlProcess.exitValue() != 0) {
 				System.out.println("Looking for possible errors calling RTL_433...");
-				inputStreamReader = new InputStreamReader(process.getErrorStream());
+				inputStreamReader = new InputStreamReader(rtlProcess.getErrorStream());
 				reader = new BufferedReader(inputStreamReader);
 				while ((line = reader.readLine()) != null) {
 					System.err.println("Error Return from RTL_433: "+line);
 				}
 			}
-			int ret = process.waitFor();
+			int ret = rtlProcess.waitFor();
 			System.out.println("Process RTL_433 finished: "+ret);
 
 		} catch (Exception e) {
@@ -199,7 +204,7 @@ public class ProcessBuilderHelper {
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
 			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
-			if(process!=null) process.destroy();
+			if(rtlProcess!=null) rtlProcess.destroy();
 		}
 	}
 
@@ -208,7 +213,7 @@ public class ProcessBuilderHelper {
 		try {
 
 			WeatherStationDataEntity weatherStationDataEntity = gson.fromJson(jsonStr, WeatherStationDataEntity.class);
-
+			rtl433Fine = true;
 			if(rainEntity == null) {
 				rainEntity = new RainEntity(weatherStationDataEntity.getRainMm());
 				File rainJsonFolder = new File(baseAppPath);
