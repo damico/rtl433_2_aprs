@@ -146,7 +146,7 @@ public class ProcessBuilderHelper {
 	public void rtl433Caller() {
 
 		Thread outWriterThread = null;
-		
+
 		List<String> rtl_cli = null;
 		if(rtl433Cli == null) {
 			rtl433Cli = Constants.DEFAULT_RTL_433_CLI;
@@ -164,26 +164,29 @@ public class ProcessBuilderHelper {
 			process = processBuilder.start();
 			outWriterThread = new ProcessStreamThread(process.getInputStream());
 			outWriterThread.start();
+			//process.waitFor();
+			inputStreamReader = new InputStreamReader(process.getInputStream());
+			reader = new BufferedReader(inputStreamReader);
+			String line = null;
+			while (line == null) {
+				while ((line = reader.readLine()) != null) {
+					System.out.println("---- Return from RTL_433: "+line);
+					jsonParser(latitude, longitude, tz, line);
+				}
+				System.out.println(";;;;;;;;;;;;;;;;;;;");
+				Thread.sleep(1000);
+			}
 			process.waitFor();
-//			inputStreamReader = new InputStreamReader(process.getInputStream());
-//			reader = new BufferedReader(inputStreamReader);
-//			String line;
-//			while ((line = reader.readLine()) != null) {
-//				System.out.println("Return from RTL_433: "+line);
-//				jsonParser(latitude, longitude, tz, line);
-//			}
-//			
-//			process.waitFor();
-//			
-//			if (process.exitValue() != 0) {
-//				System.out.println("Looking for possible errors calling RTL_433...");
-//				inputStreamReader = new InputStreamReader(process.getErrorStream());
-//				reader = new BufferedReader(inputStreamReader);
-//				while ((line = reader.readLine()) != null) {
-//					System.err.println("Error Return from RTL_433: "+line);
-//				}
-//			}
-//			
+			//			
+			//			if (process.exitValue() != 0) {
+			//				System.out.println("Looking for possible errors calling RTL_433...");
+			//				inputStreamReader = new InputStreamReader(process.getErrorStream());
+			//				reader = new BufferedReader(inputStreamReader);
+			//				while ((line = reader.readLine()) != null) {
+			//					System.err.println("Error Return from RTL_433: "+line);
+			//				}
+			//			}
+			//			
 
 
 		} catch (Exception e) {
