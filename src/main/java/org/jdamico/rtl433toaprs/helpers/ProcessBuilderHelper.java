@@ -168,16 +168,16 @@ public class ProcessBuilderHelper {
 			reader = new BufferedReader(inputStreamReader);
 			String line = null;
 			while(line == null) {
-			while ((line = reader.readLine()) != null) {
-				System.out.println("Return from RTL_433: "+line);
-				try {
-					jsonParser(latitude, longitude, tz, line);
-				}catch (Exception e) {
-					e.printStackTrace();
+				while ((line = reader.readLine()) != null) {
+					System.out.println("Return from RTL_433: "+line);
+					try {
+						jsonParser(latitude, longitude, tz, line);
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-			}
-		Thread.sleep(1000);
-		System.out.println("--------------------------");
+				Thread.sleep(1000);
+				System.out.println("--------------------------");
 			}
 
 			if (process.exitValue() != 0) {
@@ -188,8 +188,8 @@ public class ProcessBuilderHelper {
 					System.err.println("Error Return from RTL_433: "+line);
 				}
 			}
-			process.waitFor();
-
+			int ret = process.waitFor();
+			System.out.println("Process RTL_433 finished: "+ret);
 
 		} catch (Exception e) {
 			System.err.println("Error calling : "+this.getClass().getName());
