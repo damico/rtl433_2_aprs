@@ -168,6 +168,8 @@ public class ProcessBuilderHelper {
 				jsonParser(latitude, longitude, tz, line);
 			}
 
+			System.out.println("Looking for possible errors calling RTL_433...");
+			
 			inputStreamReader = new InputStreamReader(process.getErrorStream());
 			reader = new BufferedReader(inputStreamReader);
 			while ((line = reader.readLine()) != null) {
