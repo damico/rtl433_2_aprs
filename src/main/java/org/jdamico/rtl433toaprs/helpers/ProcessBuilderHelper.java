@@ -164,6 +164,7 @@ public class ProcessBuilderHelper {
 			process = processBuilder.start();
 			outWriterThread = new ProcessStreamThread(process.getInputStream());
 			outWriterThread.start();
+			process.waitFor();
 //			inputStreamReader = new InputStreamReader(process.getInputStream());
 //			reader = new BufferedReader(inputStreamReader);
 //			String line;
