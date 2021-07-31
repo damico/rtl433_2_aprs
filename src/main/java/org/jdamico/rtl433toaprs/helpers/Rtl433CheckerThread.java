@@ -4,8 +4,7 @@ package org.jdamico.rtl433toaprs.helpers;
 public class Rtl433CheckerThread extends Thread {
 	private ProcessBuilderHelper processBuilderHelper;
 	public Rtl433CheckerThread(ProcessBuilderHelper processBuilderHelper) {
-		this.processBuilderHelper = processBuilderHelper;
-		this.processBuilderHelper.rtlTestCaller();	
+		this.processBuilderHelper = processBuilderHelper;	
 	}
 
 	public void run() {
@@ -19,7 +18,7 @@ public class Rtl433CheckerThread extends Thread {
 					if(process != null) {
 						process.destroyForcibly();
 						System.out.println("RTL Process destroyed.");
-						processBuilderHelper.rtlTestCaller();
+						processBuilderHelper.rtl433Caller();
 						count = 0;
 						System.out.println("New RTL process started.");
 					}

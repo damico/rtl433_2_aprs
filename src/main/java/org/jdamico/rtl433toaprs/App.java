@@ -89,8 +89,8 @@ public class App {
 					Soundcard.enumerate();
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 					Rtl433CheckerThread rtl433CheckerThread =  new Rtl433CheckerThread(processBuilderHelper);
-					
-					
+					rtl433CheckerThread.start();
+					processBuilderHelper.rtl433Caller();
 					try {
 						GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
 						//gpsdClientRuntime.connetAndCollectFromGpsD();
