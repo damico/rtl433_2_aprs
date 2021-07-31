@@ -152,9 +152,7 @@ public class ProcessBuilderHelper {
 		}else System.out.println("Using: rtl_433_cli from config.");
 		rtl_cli = BasicHelper.getInstance().stringToListCli(rtl433Cli);
 		System.out.println("Calling rtl_433...("+rtl433Cli+")");
-		ProcessBuilder processBuilder = new ProcessBuilder();
-		processBuilder.command(rtl_cli);
-
+		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(rtl_cli);
 		InputStreamReader inputStreamReader = null;
 		BufferedReader reader = null;
 		Process process = null;

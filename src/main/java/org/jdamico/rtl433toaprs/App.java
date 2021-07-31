@@ -68,13 +68,6 @@ public class App {
 						configJsonStr = BasicHelper.getInstance().readTextFileToString(configFile);
 						Gson gson = new Gson();
 						configEntity = gson.fromJson(configJsonStr, ConfigEntity.class);
-						try {
-							GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
-							gpsdClientRuntime.connetAndCollectFromGpsD();
-						}catch (IOException e) {
-							System.err.println("Error trying to connect to GPSD.");
-							System.err.println("Exception at Main class: "+e.getMessage());
-						}
 					} catch (Exception e) {
 						System.err.println("Error trying to connect to GPSD.");
 						System.err.println("Exception at Main class: "+e.getMessage());
@@ -96,6 +89,14 @@ public class App {
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 					processBuilderHelper.rtlTestCaller();
 					processBuilderHelper.rtl433Caller();
+					try {
+						GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
+						gpsdClientRuntime.connetAndCollectFromGpsD();
+					}catch (IOException e) {
+						System.err.println("Error trying to connect to GPSD.");
+						System.err.println("Exception at Main class: "+e.getMessage());
+					}
+				
 				}else {
 					System.err.println("Unable to parse configuration params.");
 					System.exit(1);
@@ -106,6 +107,9 @@ public class App {
 				e.printStackTrace();
 				System.exit(1);
 			}
+			
+			
+			
 		}
 	}
 
