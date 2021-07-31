@@ -14,13 +14,16 @@ public class ProcessStreamThread extends Thread {
 	public void run() {
 
 		BufferedReader reader = null;
-		
+
 		try {
 			reader = new BufferedReader(new InputStreamReader(in));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				System.out.println("Return from RTL_433: "+line);
-				//processBuilderHelper.jsonParser(latitude, longitude, tz, line);
+			String line = null;
+			while(line == null) {
+				while ((line = reader.readLine()) != null) {
+					System.out.println("Return from RTL_433: "+line);
+					//processBuilderHelper.jsonParser(latitude, longitude, tz, line);
+				}
+				Thread.sleep(1000);
 			}
 		} catch (Exception e) {
 			System.err.println("Error calling : "+this.getClass().getName());

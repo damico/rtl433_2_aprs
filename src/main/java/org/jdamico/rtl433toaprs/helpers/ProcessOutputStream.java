@@ -28,6 +28,8 @@ public class ProcessOutputStream extends OutputStream {
 	public ProcessOutputStream(ProcessBuilder builder, Writer output, Writer error) throws IOException {
 		this.process = builder.start();
 
+		
+		
 		//errWriterThread = new StreamGobbler(process.getErrorStream(), error);
 		
 		
