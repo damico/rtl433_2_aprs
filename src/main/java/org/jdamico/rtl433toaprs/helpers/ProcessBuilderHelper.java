@@ -33,9 +33,9 @@ public class ProcessBuilderHelper {
 	private static int hours = 0;
 	private static int lastMinute = 0;
 	private Double hourRainMm = .0;
-	private static final String rainJsonPath = "dist/";
-	private static final String rainJsonFilePath = rainJsonPath+"rain.json";
-	private static final String pressureJsonFilePath = rainJsonPath+"pressure.json";
+	private static final String baseAppPath = System.getProperty("user.dir")+"/dist/";
+	private static final String rainJsonFilePath = baseAppPath+"rain.json";
+	private static final String pressureJsonFilePath = baseAppPath+"pressure.json";
 	private Double latitude; 
 	private Double longitude; 
 	private Integer tz;
@@ -52,6 +52,8 @@ public class ProcessBuilderHelper {
 
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
+		
+		System.out.println("baseAppPath: "+baseAppPath);
 		
 		gson = new Gson();
 		rainJsonFile = new File(rainJsonFilePath);
@@ -152,7 +154,7 @@ public class ProcessBuilderHelper {
 			
 			if(rainEntity == null) {
 				rainEntity = new RainEntity(weatherStationDataEntity.getRainMm());
-				File rainJsonFolder = new File(rainJsonPath);
+				File rainJsonFolder = new File(baseAppPath);
 				if(rainJsonFolder == null || !rainJsonFolder.exists()) rainJsonFolder.mkdir();
 				BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 			}
