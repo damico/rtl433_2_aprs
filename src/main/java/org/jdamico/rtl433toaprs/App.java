@@ -3,6 +3,8 @@ package org.jdamico.rtl433toaprs;
 import java.io.File;
 import java.io.IOException;
 
+import javax.sound.midi.SysexMessage;
+
 import org.jdamico.gpsd.client.GpsdClientRuntime;
 import org.jdamico.javax25.soundcard.Soundcard;
 import org.jdamico.rtl433toaprs.entities.ConfigEntity;
@@ -40,8 +42,8 @@ public class App {
 			
 			try {
 				pid = BasicHelper.getInstance().readTextFileToString(lockFile);
-				BasicHelper.getInstance().posixKill("9", pid);
-				lockFile.delete();
+				System.out.println("There is a FINE process already running: "+pid);
+				System.exit(0);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
