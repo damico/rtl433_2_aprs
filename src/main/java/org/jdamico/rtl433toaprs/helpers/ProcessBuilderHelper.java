@@ -199,12 +199,10 @@ public class ProcessBuilderHelper {
 		} catch (Exception e) {
 			System.err.println("Error calling : "+this.getClass().getName());
 			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
-			System.exit(1);
-
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
 			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
-			if(rtlProcess!=null) rtlProcess.destroy();
+			if(rtlProcess!=null) rtlProcess.destroyForcibly();
 		}
 	}
 
