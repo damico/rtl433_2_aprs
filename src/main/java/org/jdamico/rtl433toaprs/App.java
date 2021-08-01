@@ -8,6 +8,7 @@ import org.jdamico.javax25.soundcard.Soundcard;
 import org.jdamico.rtl433toaprs.entities.ConfigEntity;
 import org.jdamico.rtl433toaprs.helpers.BasicHelper;
 import org.jdamico.rtl433toaprs.helpers.ProcessBuilderHelper;
+import org.jdamico.rtl433toaprs.helpers.Rtl433CallerThread;
 import org.jdamico.rtl433toaprs.helpers.Rtl433CheckerThread;
 
 import com.google.gson.Gson;
@@ -90,7 +91,8 @@ public class App {
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 					Rtl433CheckerThread rtl433CheckerThread =  new Rtl433CheckerThread(processBuilderHelper);
 					rtl433CheckerThread.start();
-					processBuilderHelper.rtl433Caller();
+					Rtl433CallerThread rtl433CallerThread = new Rtl433CallerThread(processBuilderHelper);
+					rtl433CallerThread.start();
 					try {
 						GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
 						//gpsdClientRuntime.connetAndCollectFromGpsD();

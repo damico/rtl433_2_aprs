@@ -18,7 +18,8 @@ public class Rtl433CheckerThread extends Thread {
 					if(process != null) {
 						process.destroyForcibly();
 						System.out.println("RTL Process destroyed.");
-						processBuilderHelper.rtl433Caller();
+						Rtl433CallerThread rtl433CallerThread = new Rtl433CallerThread(processBuilderHelper);
+						rtl433CallerThread.start();
 						count = 0;
 						System.out.println("New RTL process started.");
 					}
