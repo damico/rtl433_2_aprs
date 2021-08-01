@@ -23,13 +23,13 @@ public class Rtl433CheckerThread extends Thread {
 						rtl433CallerThread.start();
 						count = 0;
 						System.out.println("New RTL process started.");
-					}
+					} 
 					
 				}
 				Thread.sleep(1000);
 				count++;
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				count = 0;
 				e.printStackTrace();
 			}
 			
