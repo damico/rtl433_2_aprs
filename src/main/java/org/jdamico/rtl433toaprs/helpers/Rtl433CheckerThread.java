@@ -14,9 +14,10 @@ public class Rtl433CheckerThread extends Thread {
 				System.out.println("No valid RTL return: "+count);
 				if(count == 59) {
 					System.out.println("Trying to destroy RTL process.");
-					Process process = processBuilderHelper.getRtlProcess();
-					if(process != null) {
-						process.destroyForcibly();
+					
+					if(processBuilderHelper.rtlProcess != null  && processBuilderHelper.rtlProcess.isAlive()) {
+						processBuilderHelper.rtlProcess.destroyForcibly();
+						Thread.sleep(5000);
 						System.out.println("RTL Process destroyed.");
 						Rtl433CallerThread rtl433CallerThread = new Rtl433CallerThread(processBuilderHelper);
 						rtl433CallerThread.start();

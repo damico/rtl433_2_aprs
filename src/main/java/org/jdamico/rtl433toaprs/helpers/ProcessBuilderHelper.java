@@ -51,12 +51,8 @@ public class ProcessBuilderHelper {
 	private String stationName;
 	private String rtl433Cli;
 	public static boolean rtl433Fine = false;
-	private Process rtlProcess;
+	public static Process rtlProcess;
 	
-
-	public Process getRtlProcess() {
-		return rtlProcess;
-	}
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
 
@@ -202,7 +198,7 @@ public class ProcessBuilderHelper {
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
 			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
-			if(rtlProcess!=null) rtlProcess.destroyForcibly();
+			if(rtlProcess!=null && rtlProcess.isAlive()) rtlProcess.destroyForcibly();
 		}
 	}
 
