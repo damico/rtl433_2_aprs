@@ -8,8 +8,6 @@ import org.jdamico.javax25.soundcard.Soundcard;
 import org.jdamico.rtl433toaprs.entities.ConfigEntity;
 import org.jdamico.rtl433toaprs.helpers.BasicHelper;
 import org.jdamico.rtl433toaprs.helpers.ProcessBuilderHelper;
-import org.jdamico.rtl433toaprs.helpers.Rtl433CallerThread;
-import org.jdamico.rtl433toaprs.helpers.Rtl433CheckerThread;
 
 import com.google.gson.Gson;
 
@@ -30,6 +28,26 @@ import com.google.gson.Gson;
 
 public class App {
 	public static void main( String[] args ){
+		
+		
+		String lockFilePath = "/tmp/"+Constants.APP_NAME+".lock";
+		
+		File lockFile = new File(lockFilePath);
+		
+		String pid = null;
+		
+		if(lockFile != null && lockFile.exists() && lockFile.isFile()) {
+			
+			try {
+				pid = BasicHelper.getInstance().readTextFileToString(lockFile);
+				BasicHelper.getInstance().posixKill("9", pid);
+				lockFile.delete();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 
 		ConfigEntity configEntity = null;
 
@@ -89,10 +107,11 @@ public class App {
 				if(configEntity !=null) {
 					Soundcard.enumerate();
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
-					Rtl433CheckerThread rtl433CheckerThread =  new Rtl433CheckerThread(processBuilderHelper);
-					rtl433CheckerThread.start();
-					Rtl433CallerThread rtl433CallerThread = new Rtl433CallerThread(processBuilderHelper);
-					rtl433CallerThread.start();
+					processBuilderHelper.rtl433Caller();
+//					Rtl433CheckerThread rtl433CheckerThread =  new Rtl433CheckerThread(processBuilderHelper);
+//					rtl433CheckerThread.start();
+//					Rtl433CallerThread rtl433CallerThread = new Rtl433CallerThread(processBuilderHelper);
+//					rtl433CallerThread.start();
 					try {
 						GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
 						//gpsdClientRuntime.connetAndCollectFromGpsD();

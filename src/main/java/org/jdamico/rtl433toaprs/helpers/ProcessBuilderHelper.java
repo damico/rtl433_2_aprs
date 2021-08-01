@@ -179,8 +179,6 @@ public class ProcessBuilderHelper {
 				}
 			}
 
-
-
 			if (rtlProcess.exitValue() != 0) {
 				System.out.println("Looking for possible errors calling RTL_433...");
 				inputStreamReader = new InputStreamReader(rtlProcess.getErrorStream());
@@ -208,6 +206,13 @@ public class ProcessBuilderHelper {
 
 			WeatherStationDataEntity weatherStationDataEntity = gson.fromJson(jsonStr, WeatherStationDataEntity.class);
 			rtl433Fine = true;
+			
+			String lockFilePath = "/tmp/"+Constants.APP_NAME+".lock";
+			String pid = BasicHelper.getInstance().getCurrentPid();
+			BasicHelper.getInstance().writeStrToFile(pid, lockFilePath);
+			
+			System.out.println("My pid: "+pid);
+			
 			if(rainEntity == null) {
 				rainEntity = new RainEntity(weatherStationDataEntity.getRainMm());
 				File rainJsonFolder = new File(baseAppPath);

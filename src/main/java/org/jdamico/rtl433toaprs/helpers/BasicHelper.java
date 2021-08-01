@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,6 +36,16 @@ public class BasicHelper {
 		}catch (NullPointerException e) {}
 		return strDate;
 
+	}
+
+	public void posixKill(String signal, String pid)  {
+
+		try {
+			Runtime runtime = Runtime.getRuntime();
+			runtime.exec("kill -"+signal+" "+pid);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Date stringToDate(String dateStr, String format) throws Exception{
@@ -122,6 +133,16 @@ public class BasicHelper {
 
 	public String getAbsoluteMainJarPath() throws URISyntaxException {
 		return new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+	}
+	
+	public String getCurrentPid() {
+		String ret = null;
+		String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+	    int index = jvmName.indexOf('@');
+	    ret = Long.toString(Long.parseLong(jvmName.substring(0, index)));
+	   
+	    
+	    return ret;
 	}
 
 }
