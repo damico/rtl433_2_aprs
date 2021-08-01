@@ -15,6 +15,7 @@ import org.jdamico.javax25.ax25.Afsk1200MultiDemodulator;
 import org.jdamico.javax25.ax25.Packet;
 import org.jdamico.javax25.ax25.PacketDemodulator;
 import org.jdamico.javax25.soundcard.Soundcard;
+import org.jdamico.rtl433toaprs.App;
 import org.jdamico.rtl433toaprs.Constants;
 import org.jdamico.rtl433toaprs.entities.ConfigEntity;
 import org.jdamico.rtl433toaprs.entities.PressureEntity;
@@ -151,6 +152,8 @@ public class ProcessBuilderHelper {
 
 	public void rtl433Caller() {
 
+		
+		
 		List<String> rtl_cli = null;
 		if(rtl433Cli == null) {
 			rtl433Cli = Constants.DEFAULT_RTL_433_CLI;
@@ -164,7 +167,7 @@ public class ProcessBuilderHelper {
 		BufferedReader reader = null;
 		
 		try {
-
+			BasicHelper.getInstance().writeStrToFile("1@"+App.pid, App.lockFile);
 			rtlProcess = processBuilder.start();
 			inputStreamReader = new InputStreamReader(rtlProcess.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
@@ -205,13 +208,13 @@ public class ProcessBuilderHelper {
 		try {
 
 			WeatherStationDataEntity weatherStationDataEntity = gson.fromJson(jsonStr, WeatherStationDataEntity.class);
-			rtl433Fine = true;
 			
-			String lockFilePath = "/tmp/"+Constants.APP_NAME+".lock";
-			String pid = BasicHelper.getInstance().getCurrentPid();
-			BasicHelper.getInstance().writeStrToFile(pid, lockFilePath);
 			
-			System.out.println("My pid: "+pid);
+			if(!rtl433Fine) {
+				BasicHelper.getInstance().writeStrToFile("0@"+App.pid, App.lockFile);
+				rtl433Fine = true;
+			}
+			
 			
 			if(rainEntity == null) {
 				rainEntity = new RainEntity(weatherStationDataEntity.getRainMm());

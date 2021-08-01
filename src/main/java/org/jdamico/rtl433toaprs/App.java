@@ -29,27 +29,40 @@ import com.google.gson.Gson;
  */
 
 public class App {
+	
+	public static File lockFile; 
+	public static String pid;
 	public static void main( String[] args ){
 		
 		
 		String lockFilePath = "/tmp/"+Constants.APP_NAME+".lock";
 		
-		File lockFile = new File(lockFilePath);
+		lockFile = new File(lockFilePath);
 		
-		String pid = null;
+		pid = null;
 		
 		if(lockFile != null && lockFile.exists() && lockFile.isFile()) {
 			
 			try {
-				pid = BasicHelper.getInstance().readTextFileToString(lockFile);
-				System.out.println("There is a FINE process already running: "+pid);
-				System.exit(0);
+				String[] pStatus = BasicHelper.getInstance().readTextFileToString(lockFile).split("@");
+				if(pStatus[0].equals("0")) {
+					System.out.println("There is a FINE process already running: "+pid);
+					System.exit(0);
+				}else if(pStatus[0].equals("1")){
+					BasicHelper.getInstance().posixKill("9", pStatus[1]);
+					lockFile.delete();
+					System.out.println("There is a STUCKED process already running: "+pid+". Killing it.");
+					
+				}
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 		}
+		
+		
 
 		ConfigEntity configEntity = null;
 
@@ -107,6 +120,11 @@ public class App {
 
 			try {
 				if(configEntity !=null) {
+					
+					pid = BasicHelper.getInstance().getCurrentPid();
+					BasicHelper.getInstance().writeStrToFile("-@"+pid, lockFilePath);
+					System.out.println("My PID: "+pid);
+					
 					Soundcard.enumerate();
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 					processBuilderHelper.rtl433Caller();

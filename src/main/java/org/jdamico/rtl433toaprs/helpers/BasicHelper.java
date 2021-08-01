@@ -89,10 +89,17 @@ public class BasicHelper {
 
 	public void writeStrToFile(String str, String fileName) throws IOException{
 
+		File file = new File(fileName);
+		writeStrToFile(str, file);
+	}
+
+	
+	public void writeStrToFile(String str, File file) throws IOException{
+
 		FileWriter fw = null;
 		BufferedWriter out = null;
 		try {
-			fw = new FileWriter(fileName);
+			fw = new FileWriter(file);
 			out = new BufferedWriter(fw);
 			out.write(str);  
 		}finally{
@@ -106,7 +113,8 @@ public class BasicHelper {
 
 		}	
 	}
-
+	
+	
 	public String listToString(List<String> lst) {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < lst.size(); i++) {
