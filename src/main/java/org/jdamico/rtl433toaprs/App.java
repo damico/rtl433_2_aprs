@@ -45,11 +45,12 @@ public class App {
 			
 			try {
 				String[] pStatus = BasicHelper.getInstance().readTextFileToString(lockFile).split("@");
+				pid = pStatus[1];
 				if(pStatus[0].equals("0")) {
 					System.out.println("There is a FINE process already running: "+pid);
 					System.exit(0);
 				}else if(pStatus[0].equals("1")){
-					BasicHelper.getInstance().posixKill("9", pStatus[1]);
+					BasicHelper.getInstance().posixKill("9", pid);
 					lockFile.delete();
 					System.out.println("There is a STUCKED process already running: "+pid+". Killing it.");
 					
