@@ -165,7 +165,7 @@ public class ProcessBuilderHelper {
 		
 		try {
 
-			this.rtlProcess = processBuilder.start();
+			rtlProcess = processBuilder.start();
 			inputStreamReader = new InputStreamReader(rtlProcess.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
 			String line = null;
