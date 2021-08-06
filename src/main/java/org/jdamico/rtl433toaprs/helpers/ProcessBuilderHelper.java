@@ -118,36 +118,49 @@ public class ProcessBuilderHelper {
 
 	}
 
-	public void rtlTestCaller() {
+	public boolean rtlTestCaller() {
+		
+		boolean isTestFine = false;
 
 		System.out.println("Calling rtl_test...("+Constants.DEFAULT_RTL_TEST_CLI+")");
 		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(BasicHelper.getInstance().stringToListCli(Constants.DEFAULT_RTL_TEST_CLI));
 
 		InputStreamReader inputStreamReader = null;
 		BufferedReader reader = null;
-		Process process = null;
 		try {
 
-			process = processBuilder.start();
-			inputStreamReader = new InputStreamReader(process.getInputStream());
+			rtlProcess = processBuilder.start();
+			inputStreamReader = new InputStreamReader(rtlProcess.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
 			String line;
 			while ((line = reader.readLine()) != null) {
-				System.out.println("Return from RTL_TEST: "+line);
-				//jsonParser(latitude, longitude, tz, line);
+				System.out.println("Return from rtlTestCaller: "+line);
+				isTestFine = true;
+			}
+			
+			if (rtlProcess.exitValue() != 0) {
+				isTestFine = false;
+				System.out.println("Looking for possible errors calling rtlTestCaller...");
+				inputStreamReader = new InputStreamReader(rtlProcess.getErrorStream());
+				reader = new BufferedReader(inputStreamReader);
+				while ((line = reader.readLine()) != null) {
+					System.err.println("Error Return from rtlTestCaller: "+line);
+				}
 			}
 
+			int ret = rtlProcess.waitFor();
+			System.out.println("Process rtlTestCaller finished: "+ret);
 
 		} catch (Exception e) {
-			System.err.println("Error calling : "+this.getClass().getName());
-			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
-			System.exit(1);
+			System.err.println("Error calling rtlTestCaller: "+this.getClass().getName());
+			System.err.println("Exception at (rtlTestCaller) "+this.getClass().getName()+" class: "+e.getMessage());
 
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
 			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
-			if(process!=null) process.destroy();
+			if(rtlProcess!=null) rtlProcess.destroy();
 		}
+		return isTestFine;
 	}
 
 	public void rtl433Caller() {

@@ -29,20 +29,20 @@ import com.google.gson.Gson;
  */
 
 public class App {
-	
+
 	public static File lockFile; 
 	public static String pid;
 	public static void main( String[] args ){
-		
-		
+
+
 		String lockFilePath = "/tmp/"+Constants.APP_NAME+".lock";
-		
+
 		lockFile = new File(lockFilePath);
-		
+
 		pid = null;
-		
+
 		if(lockFile != null && lockFile.exists() && lockFile.isFile()) {
-			
+
 			try {
 				String[] pStatus = BasicHelper.getInstance().readTextFileToString(lockFile).split("@");
 				pid = pStatus[1];
@@ -53,17 +53,17 @@ public class App {
 					BasicHelper.getInstance().posixKill("9", pid);
 					lockFile.delete();
 					System.out.println("There is a STUCKED process already running: "+pid+". Killing it.");
-					
+
 				}
-				
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
-		
-		
+
+
 
 		ConfigEntity configEntity = null;
 
@@ -121,28 +121,39 @@ public class App {
 
 			try {
 				if(configEntity !=null) {
-					
+
 					pid = BasicHelper.getInstance().getCurrentPid();
 					BasicHelper.getInstance().writeStrToFile("-@"+pid, lockFilePath);
 					System.out.println("My PID: "+pid);
-					
+
 					Soundcard.enumerate();
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
-					processBuilderHelper.rtl433Caller();
-//					Rtl433CheckerThread rtl433CheckerThread =  new Rtl433CheckerThread(processBuilderHelper);
-//					rtl433CheckerThread.start();
-//					Rtl433CallerThread rtl433CallerThread = new Rtl433CallerThread(processBuilderHelper);
-//					rtl433CallerThread.start();
-					try {
-						GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
-						//gpsdClientRuntime.connetAndCollectFromGpsD();
-					}catch (IOException e) {
-						System.err.println("Error trying to connect to GPSD.");
-						System.err.println("Exception at Main class: "+e.getMessage());
+					int usbResetTries = 0;
+					boolean isRtlDeviceFine = false;
+					while(!processBuilderHelper.rtlTestCaller() || usbResetTries < Constants.USB_REST_TRIES) {
+						isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
+						if(!isRtlDeviceFine){
+							System.out.println("Trying to reset usb device...");
+							//resetusb
+							usbResetTries++;
+						}else break;
 					}
-					processBuilderHelper.rtl433Caller();
-					
-				
+
+					if(isRtlDeviceFine){
+						processBuilderHelper.rtl433Caller();
+						try {
+							GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
+							//gpsdClientRuntime.connetAndCollectFromGpsD();
+						}catch (IOException e) {
+							System.err.println("Error trying to connect to GPSD.");
+							System.err.println("Exception at Main class: "+e.getMessage());
+						}
+					}else {
+						System.err.println("Unable to call RTL-SDR devce.");
+						System.exit(1);
+					}
+
+
 				}else {
 					System.err.println("Unable to parse configuration params.");
 					System.exit(1);
@@ -153,9 +164,9 @@ public class App {
 				e.printStackTrace();
 				System.exit(1);
 			}
-			
-			
-			
+
+
+
 		}
 	}
 
