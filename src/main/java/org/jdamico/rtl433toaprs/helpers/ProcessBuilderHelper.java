@@ -270,15 +270,19 @@ public class ProcessBuilderHelper {
 				if(rainMM > 0) {
 					System.out.println("Raining: "+rainMM+" | "+weatherStationDataEntity.getRainMm()+" | "+rainEntity.getInitialRain());
 					rainEntity.setInitialRain(weatherStationDataEntity.getRainMm());
+					
+					hourRainMm = hourRainMm + rainMM;
+					weatherStationDataEntity.setPastHourRainMM(hourRainMm);
+					rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + rainMM;
+					dailyRainMm = dailyRainMm + rainMM;
+					weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
+					rainEntity.rainEntitySetRainUpdateMM(rainEntity.getInitialRain()+rainMM, dailyRainMm, rainMmSinceLocalMidnight, hourRainMm);
+					setRainHourly(hourRainMm, zuluCalHour, rainEntity);
+				}else if(rainMM < 0) {
+					System.err.println("Wrong negative rainMM value: "+rainMM);
 				}
 
-				hourRainMm = hourRainMm + rainMM;
-				weatherStationDataEntity.setPastHourRainMM(hourRainMm);
-				rainMmSinceLocalMidnight = rainMmSinceLocalMidnight + rainMM;
-				dailyRainMm = dailyRainMm + rainMM;
-				weatherStationDataEntity.setRainMmSinceLocalMidnight(rainMmSinceLocalMidnight);
-				rainEntity.rainEntitySetRainUpdateMM(rainEntity.getInitialRain()+rainMM, dailyRainMm, rainMmSinceLocalMidnight, hourRainMm);
-				setRainHourly(hourRainMm, zuluCalHour, rainEntity);
+				
 
 				weatherStationDataEntity.setRainMm(dailyRainMm);		
 				weatherStationDataEntity = weatherStationDataEntity.toImperial();
