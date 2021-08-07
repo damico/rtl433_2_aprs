@@ -52,12 +52,15 @@ public class ProcessBuilderHelper {
 	private String stationName;
 	private String rtl433Cli;
 	public static boolean rtl433Fine = false;
-	public static Process rtlProcess;
+	public Process rtlProcess;
+	public String rtlUsbDevice;
 	
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
 
 
+		if(configEntity.getRtlUsbDevice() != null) rtlUsbDevice = configEntity.getRtlUsbDevice();
+		
 		if(configEntity.getRunningPath() != null) baseAppPath = configEntity.getRunningPath()+"/dist/";
 		else baseAppPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/dist/";
 
@@ -118,6 +121,56 @@ public class ProcessBuilderHelper {
 
 	}
 
+	public boolean rtlResetUsb() {
+		
+		boolean isTestFine = false;
+		
+		String[] split = rtlUsbDevice.split(":");
+		String cliSuffix = "0x" + split[0] + " 0x" +split[1];
+
+		String resetCli = Constants.DEFAULT_PYTHON_CLI + " " + baseAppPath+Constants.DEFAULT_RESET_RTL_CLI + " "+cliSuffix;
+
+		System.out.println("Calling rtlResetUsb...("+Constants.DEFAULT_RESET_RTL_CLI+")");
+		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(BasicHelper.getInstance().stringToListCli(resetCli));
+
+		InputStreamReader inputStreamReader = null;
+		BufferedReader reader = null;
+		try {
+
+			rtlProcess = processBuilder.start();
+			inputStreamReader = new InputStreamReader(rtlProcess.getInputStream());
+			reader = new BufferedReader(inputStreamReader);
+			String line;
+			while ((line = reader.readLine()) != null) {
+				System.out.println("Return from rtlResetUsb: "+line);
+				isTestFine = true;
+			}
+			
+			if (rtlProcess.exitValue() != 0) {
+				isTestFine = false;
+				System.out.println("Looking for possible errors calling rtlResetUsb...");
+				inputStreamReader = new InputStreamReader(rtlProcess.getErrorStream());
+				reader = new BufferedReader(inputStreamReader);
+				while ((line = reader.readLine()) != null) {
+					System.err.println("Error Return from rtlResetUsb: "+line);
+				}
+			}
+
+			int ret = rtlProcess.waitFor();
+			System.out.println("Process rtlResetUsb finished: "+ret);
+
+		} catch (Exception e) {
+			System.err.println("Error calling rtlResetUsb: "+this.getClass().getName());
+			System.err.println("Exception at (rtlResetUsb) "+this.getClass().getName()+" class: "+e.getMessage());
+
+		}finally {
+			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
+			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
+			if(rtlProcess!=null) rtlProcess.destroy();
+		}
+		return isTestFine;
+	}
+	
 	public boolean rtlTestCaller() {
 		
 		boolean isTestFine = false;

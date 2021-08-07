@@ -25,6 +25,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class ConfigEntity {
 
+	@SerializedName("rlt_usb_device")
+	@Expose
+	private String rtlUsbDevice;
+	
 	@SerializedName("rtl_433_cli")
 	@Expose
 	private String rtl433Cli;
@@ -177,6 +181,14 @@ public class ConfigEntity {
 
 	public void setRunningPath(String runningPath) {
 		this.runningPath = runningPath;
+	}
+
+	public String getRtlUsbDevice() {
+		return rtlUsbDevice;
+	}
+
+	public void setRtlUsbDevice(String rtlUsbDevice) {
+		this.rtlUsbDevice = rtlUsbDevice;
 	}
 
 }

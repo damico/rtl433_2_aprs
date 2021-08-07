@@ -9,5 +9,6 @@
 	"gpsd_port": "",
 	"station_name": "SciCrop SE-2900",
 	"rtl_433_cli": "/usr/local/bin/rtl_433 -F json",
-	"running_path": "/opt/rtl433toaprs"
+	"running_path": "/opt/rtl433toaprs",
+	"rlt_usb_device": "1d6b:0003"
 }

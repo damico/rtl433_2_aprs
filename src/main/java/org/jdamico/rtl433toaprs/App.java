@@ -134,7 +134,7 @@ public class App {
 						isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
 						if(!isRtlDeviceFine){
 							System.out.println("Trying to reset usb device...");
-							//resetusb
+							processBuilderHelper.rtlResetUsb();
 							usbResetTries++;
 						}else break;
 					}
