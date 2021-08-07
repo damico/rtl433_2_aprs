@@ -131,12 +131,13 @@ public class App {
 					int usbResetTries = 0;
 					boolean isRtlDeviceFine = false;
 					while(!isRtlDeviceFine && usbResetTries < Constants.USB_REST_TRIES) {
-						isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
 						if(!isRtlDeviceFine){
 							System.out.println("Trying to reset usb device: "+usbResetTries);
 							processBuilderHelper.rtlResetUsb();
 							usbResetTries++;
+							System.out.println("isRtlDeviceFine: "+isRtlDeviceFine);
 							Thread.sleep(5000);
+							isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
 						}else break;
 					}
 
