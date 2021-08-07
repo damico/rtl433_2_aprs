@@ -128,7 +128,7 @@ public class ProcessBuilderHelper {
 		String[] split = rtlUsbDevice.split(":");
 		String cliSuffix = "0x" + split[0] + " 0x" +split[1];
 
-		String resetCli = Constants.DEFAULT_PYTHON_CLI + " " + baseAppPath+Constants.DEFAULT_RESET_RTL_CLI + " "+cliSuffix;
+		String resetCli = Constants.DEFAULT_PYTHON_CLI + " python-script/" +Constants.DEFAULT_RESET_RTL_CLI + " "+cliSuffix;
 
 		System.out.println("Calling rtlResetUsb...("+resetCli+")");
 		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(BasicHelper.getInstance().stringToListCli(resetCli));
@@ -162,6 +162,7 @@ public class ProcessBuilderHelper {
 		} catch (Exception e) {
 			System.err.println("Error calling rtlResetUsb: "+this.getClass().getName());
 			System.err.println("Exception at (rtlResetUsb) "+this.getClass().getName()+" class: "+e.getMessage());
+			e.printStackTrace();
 
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
