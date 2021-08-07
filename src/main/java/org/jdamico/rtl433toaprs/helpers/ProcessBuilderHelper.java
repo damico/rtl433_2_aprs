@@ -81,7 +81,7 @@ public class ProcessBuilderHelper {
 
 			rainEntity = RainEntity.fromJsonFile(rainJsonFile);
 			long diffHoursFromLastUpdate = BasicHelper.getInstance().getDiffHoursBetweenDates(rainEntity.getLastUpdateDate(), new Date());
-			if(diffHoursFromLastUpdate > Constants.LAST_UPDATE_LIMIT) rainJsonFile.delete();
+			if(diffHoursFromLastUpdate > Constants.LAST_UPDATE_LIMIT || hourRainMm < 0) rainJsonFile.delete();
 			else {
 
 				rainMmSinceLocalMidnight = rainEntity.getRain_mm_since_local_midnight();
@@ -157,8 +157,6 @@ public class ProcessBuilderHelper {
 		} catch (Exception e) {
 			System.err.println("Error calling rtlResetUsb: "+this.getClass().getName());
 			System.err.println("Exception at (rtlResetUsb) "+this.getClass().getName()+" class: "+e.getMessage());
-			e.printStackTrace();
-
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
 			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
