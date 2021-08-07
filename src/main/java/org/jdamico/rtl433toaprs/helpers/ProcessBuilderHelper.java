@@ -145,19 +145,6 @@ public class ProcessBuilderHelper {
 				System.out.println("Return from rtlResetUsb: "+line);
 				isTestFine = true;
 			}
-			
-			int ret = rtlProcess.waitFor();
-			System.out.println("Process rtlResetUsb finished: "+ret);
-			
-			if (rtlProcess.exitValue() != 0) {
-				isTestFine = false;
-				System.out.println("Looking for possible errors calling rtlResetUsb...");
-				inputStreamReader = new InputStreamReader(rtlProcess.getErrorStream());
-				reader = new BufferedReader(inputStreamReader);
-				while ((line = reader.readLine()) != null) {
-					System.err.println("Error Return from rtlResetUsb: "+line);
-				}
-			}
 
 			
 
