@@ -63,7 +63,7 @@ public class App {
 
 		}
 
-
+		boolean isByParameters = false;
 
 		ConfigEntity configEntity = null;
 
@@ -76,7 +76,7 @@ public class App {
 			System.out.println("No valid parameters for config file: "+helpInfo);
 
 		}else {
-			boolean isByParameters = true;
+			
 			if(args.length == 5 || args.length == 6) {
 				System.out.println("Trying to run by command-line parameters: "+printParams(args));
 
@@ -88,6 +88,7 @@ public class App {
 
 				try {
 					configEntity  = new ConfigEntity(args[0], Double.parseDouble(args[1]), Double.parseDouble(args[2]), Integer.parseInt(args[3]), args[4], initialRainMm);
+					isByParameters = true;
 				} catch (Exception e) {
 					System.err.println("Error trying to process config parameters.");
 					System.err.println("Exception at Main class: "+e.getMessage());
@@ -98,7 +99,7 @@ public class App {
 				System.out.println("Trying to run by config file: "+args[0]);
 				File configFile = new File(args[0]);
 				if(configFile != null && configFile.exists() && configFile.isFile()) {
-
+					isByParameters = false;
 					String configJsonStr = null;
 					try {
 						configJsonStr = BasicHelper.getInstance().readTextFileToString(configFile);
