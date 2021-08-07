@@ -131,7 +131,7 @@ public class App {
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 					int usbResetTries = 0;
 					boolean isRtlDeviceFine = false;
-					while(!isRtlDeviceFine || usbResetTries <= Constants.USB_REST_TRIES || !isByParameters) {
+					while(!isRtlDeviceFine && usbResetTries <= Constants.USB_REST_TRIES && !isByParameters) {
 	
 							System.out.println("Trying to reset usb device, try: "+usbResetTries);
 							processBuilderHelper.rtlResetUsb();
