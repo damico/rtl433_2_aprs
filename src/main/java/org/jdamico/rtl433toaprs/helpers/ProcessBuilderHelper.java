@@ -171,15 +171,10 @@ public class ProcessBuilderHelper {
 		InputStreamReader inputStreamReader = null;
 		BufferedReader reader = null;
 		try {
-
+			String line;
 			rtlProcess = processBuilder.start();
 			inputStreamReader = new InputStreamReader(rtlProcess.getInputStream());
 			reader = new BufferedReader(inputStreamReader);
-			String line;
-			while ((line = reader.readLine()) != null) {
-				System.out.println("Return from rtlTestCaller: "+line);
-				isTestFine = true;
-			}
 			
 			int ret = rtlProcess.waitFor();
 			System.out.println("Process rtlTestCaller finished: "+ret);
@@ -192,7 +187,7 @@ public class ProcessBuilderHelper {
 				while ((line = reader.readLine()) != null) {
 					System.err.println("Error Return from rtlTestCaller: "+line);
 				}
-			}
+			}else isTestFine = true;
 
 			
 
