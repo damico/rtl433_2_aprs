@@ -143,7 +143,6 @@ public class App {
 					}
 
 					if(isRtlDeviceFine || isByParameters){
-						processBuilderHelper.rtl433Caller();
 						try {
 							GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
 							gpsdClientRuntime.connetAndCollectFromGpsD();
@@ -151,6 +150,9 @@ public class App {
 							System.err.println("Error trying to connect to GPSD.");
 							System.err.println("Exception at Main class: "+e.getMessage());
 						}
+						
+						processBuilderHelper.rtl433Caller();
+						
 					}else {
 						System.err.println("Unable to call RTL-SDR devce.");
 						System.exit(1);
