@@ -151,7 +151,8 @@ public class ProcessBuilderHelper {
 				System.out.println("Return from rtlResetUsb: "+line);
 				isTestFine = true;
 			}
-
+			int ret = rtlProcess.waitFor();
+			System.out.println("Process rtlTestCaller finished: "+ret);
 			
 
 		} catch (Exception e) {
