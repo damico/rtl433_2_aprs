@@ -130,7 +130,7 @@ public class ProcessBuilderHelper {
 
 		String resetCli = Constants.DEFAULT_PYTHON_CLI + " " + baseAppPath+Constants.DEFAULT_RESET_RTL_CLI + " "+cliSuffix;
 
-		System.out.println("Calling rtlResetUsb...("+Constants.DEFAULT_RESET_RTL_CLI+")");
+		System.out.println("Calling rtlResetUsb...("+resetCli+")");
 		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(BasicHelper.getInstance().stringToListCli(resetCli));
 
 		InputStreamReader inputStreamReader = null;
