@@ -76,7 +76,7 @@ public class App {
 			System.out.println("No valid parameters for config file: "+helpInfo);
 
 		}else {
-			
+
 			if(args.length == 5 || args.length == 6) {
 				System.out.println("Trying to run by command-line parameters: "+printParams(args));
 
@@ -132,14 +132,14 @@ public class App {
 					int usbResetTries = 0;
 					boolean isRtlDeviceFine = false;
 					while(!isRtlDeviceFine && usbResetTries <= Constants.USB_REST_TRIES && !isByParameters) {
-	
-							System.out.println("Trying to reset usb device, try: "+usbResetTries);
-							processBuilderHelper.rtlResetUsb();
-							usbResetTries++;
-							Thread.sleep(5000);
-							isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
-							System.out.println("isRtlDeviceFine: "+isRtlDeviceFine);
-						
+
+						System.out.println("Trying to reset usb device, try: "+usbResetTries);
+						processBuilderHelper.rtlResetUsb();
+						usbResetTries++;
+						Thread.sleep(5000);
+						isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
+						System.out.println("isRtlDeviceFine: "+isRtlDeviceFine);
+
 					}
 
 					if(isRtlDeviceFine || isByParameters){
@@ -150,9 +150,9 @@ public class App {
 							System.err.println("Error trying to connect to GPSD.");
 							System.err.println("Exception at Main class: "+e.getMessage());
 						}
-						
+
 						processBuilderHelper.rtl433Caller();
-						
+
 					}else {
 						System.err.println("Unable to call RTL-SDR devce.");
 						System.exit(1);
