@@ -3,8 +3,6 @@ package org.jdamico.rtl433toaprs;
 import java.io.File;
 import java.io.IOException;
 
-import javax.sound.midi.SysexMessage;
-
 import org.jdamico.gpsd.client.GpsdClientRuntime;
 import org.jdamico.javax25.soundcard.Soundcard;
 import org.jdamico.rtl433toaprs.entities.ConfigEntity;
