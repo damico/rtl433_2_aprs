@@ -35,7 +35,8 @@ public class ProcessBuilderHelper {
 	private static int hours = 0;
 	private static int lastMinute = 0;
 	private Double hourRainMm = .0;
-	private static String baseAppPath;
+	private static String baseDistPath;
+	private static String basePythonPath;
 	private static String rainJsonFilePath;
 	private static String pressureJsonFilePath;
 	private Double latitude; 
@@ -61,13 +62,18 @@ public class ProcessBuilderHelper {
 
 		if(configEntity.getRtlUsbDevice() != null) rtlUsbDevice = configEntity.getRtlUsbDevice();
 		
-		if(configEntity.getRunningPath() != null) baseAppPath = configEntity.getRunningPath()+"/dist/";
-		else baseAppPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/dist/";
+		if(configEntity.getRunningPath() != null) {
+			baseDistPath = configEntity.getRunningPath()+"/dist/";
+			basePythonPath = configEntity.getRunningPath()+"/python-script/";
+		}else {
+			baseDistPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/dist/";
+			basePythonPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/python-script/";
+		}
 
-		rainJsonFilePath = baseAppPath+"rain.json";
-		pressureJsonFilePath = baseAppPath+"pressure.json";
+		rainJsonFilePath = baseDistPath+"rain.json";
+		pressureJsonFilePath = baseDistPath+"pressure.json";
 
-		System.out.println("baseAppPath: "+baseAppPath);
+		System.out.println("baseAppPath: "+baseDistPath);
 
 		gson = new Gson();
 		rainJsonFile = new File(rainJsonFilePath);
@@ -128,7 +134,7 @@ public class ProcessBuilderHelper {
 		String[] split = rtlUsbDevice.split(":");
 		String cliSuffix = "0x" + split[0] + " 0x" +split[1];
 
-		String resetCli = Constants.DEFAULT_PYTHON_CLI + " python-script/" +Constants.DEFAULT_RESET_RTL_CLI + " "+cliSuffix;
+		String resetCli = Constants.DEFAULT_PYTHON_CLI + " " +basePythonPath+Constants.DEFAULT_RESET_RTL_CLI + " "+cliSuffix;
 
 		System.out.println("Calling rtlResetUsb...("+resetCli+")");
 		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(BasicHelper.getInstance().stringToListCli(resetCli));
@@ -271,7 +277,7 @@ public class ProcessBuilderHelper {
 			
 			if(rainEntity == null) {
 				rainEntity = new RainEntity(weatherStationDataEntity.getRainMm());
-				File rainJsonFolder = new File(baseAppPath);
+				File rainJsonFolder = new File(baseDistPath);
 				if(rainJsonFolder == null || !rainJsonFolder.exists()) rainJsonFolder.mkdir();
 				BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 			}
