@@ -151,10 +151,10 @@ public class App {
 
 						processBuilderHelper.rtl433Caller();
 
-					}else {
-						System.err.println("Unable to call RTL-SDR devce.");
-						System.exit(1);
 					}
+					System.err.println("Unable to call RTL-SDR device. (isRtlDeviceFine: "+isRtlDeviceFine+" | isByParameters: "+isByParameters+")");
+					System.exit(1);
+					
 
 
 				}else {
