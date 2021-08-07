@@ -51,7 +51,7 @@ public class App {
 					BasicHelper.getInstance().posixKill("9", pid);
 					lockFile.delete();
 					System.out.println("There is a STUCKED process already running: "+pid+". Killing it.");
-
+					Thread.sleep(10000);
 				}
 
 			} catch (Exception e) {
