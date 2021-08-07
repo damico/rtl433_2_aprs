@@ -7,6 +7,7 @@ Parser of RF Data from Weather Stations to be sent over APRS, written in Java
 - ASFK audio modulation/encoding over AX.25 protocol: https://github.com/damico/javAX25
 - GPSD Client: https://github.com/damico/gpsd.client
 - Adafruit_BMP.BMP085: https://github.com/adafruit/Adafruit_Python_BMP
+- PYUSB: https://pyusb.github.io/pyusb/
 
 ## Software
 
