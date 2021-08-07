@@ -128,7 +128,7 @@ public class App {
 					Soundcard.enumerate();
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 					int usbResetTries = 0;
-					boolean isRtlDeviceFine = false;
+					boolean isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
 					while(!isRtlDeviceFine && usbResetTries <= Constants.USB_REST_TRIES && !isByParameters) {
 
 						System.out.println("Trying to reset usb device, try: "+usbResetTries);
