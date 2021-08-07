@@ -155,8 +155,8 @@ public class ProcessBuilderHelper {
 			
 
 		} catch (Exception e) {
-			System.err.println("Error calling rtlResetUsb: "+this.getClass().getName());
-			System.err.println("Exception at (rtlResetUsb) "+this.getClass().getName()+" class: "+e.getMessage());
+			System.out.println("Error calling rtlResetUsb: "+this.getClass().getName());
+			System.out.println("Exception at (rtlResetUsb) "+this.getClass().getName()+" class: "+e.getMessage());
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
 			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
@@ -189,15 +189,15 @@ public class ProcessBuilderHelper {
 				inputStreamReader = new InputStreamReader(rtlProcess.getErrorStream());
 				reader = new BufferedReader(inputStreamReader);
 				while ((line = reader.readLine()) != null) {
-					System.err.println("Error Return from rtlTestCaller: "+line);
+					System.out.println("Error Return from rtlTestCaller: "+line);
 				}
 			}else isTestFine = true;
 
 			
 
 		} catch (Exception e) {
-			System.err.println("Error calling rtlTestCaller: "+this.getClass().getName());
-			System.err.println("Exception at (rtlTestCaller) "+this.getClass().getName()+" class: "+e.getMessage());
+			System.out.println("Error calling rtlTestCaller: "+this.getClass().getName());
+			System.out.println("Exception at (rtlTestCaller) "+this.getClass().getName()+" class: "+e.getMessage());
 
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
@@ -244,15 +244,15 @@ public class ProcessBuilderHelper {
 				inputStreamReader = new InputStreamReader(rtlProcess.getErrorStream());
 				reader = new BufferedReader(inputStreamReader);
 				while ((line = reader.readLine()) != null) {
-					System.err.println("Error Return from RTL_433: "+line);
+					System.out.println("Error Return from RTL_433: "+line);
 				}
 			}
 			int ret = rtlProcess.waitFor();
 			System.out.println("Process RTL_433 finished: "+ret);
 
 		} catch (Exception e) {
-			System.err.println("Error calling : "+this.getClass().getName());
-			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
+			System.out.println("Error calling : "+this.getClass().getName());
+			System.out.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
 			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
