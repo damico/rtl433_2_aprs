@@ -76,7 +76,7 @@ public class App {
 			System.out.println("No valid parameters for config file: "+helpInfo);
 
 		}else {
-
+			boolean isByParameters = true;
 			if(args.length == 5 || args.length == 6) {
 				System.out.println("Trying to run by command-line parameters: "+printParams(args));
 
@@ -130,7 +130,7 @@ public class App {
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 					int usbResetTries = 0;
 					boolean isRtlDeviceFine = false;
-					while(!isRtlDeviceFine || usbResetTries > Constants.USB_REST_TRIES) {
+					while(!isRtlDeviceFine || usbResetTries > Constants.USB_REST_TRIES || isByParameters) {
 	
 							System.out.println("Trying to reset usb device, try: "+usbResetTries);
 							processBuilderHelper.rtlResetUsb();
@@ -141,7 +141,7 @@ public class App {
 						
 					}
 
-					if(isRtlDeviceFine){
+					if(isRtlDeviceFine || isByParameters){
 						processBuilderHelper.rtl433Caller();
 						try {
 							GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());

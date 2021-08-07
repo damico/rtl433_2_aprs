@@ -81,7 +81,7 @@ public class ProcessBuilderHelper {
 
 			rainEntity = RainEntity.fromJsonFile(rainJsonFile);
 			long diffHoursFromLastUpdate = BasicHelper.getInstance().getDiffHoursBetweenDates(rainEntity.getLastUpdateDate(), new Date());
-			if(diffHoursFromLastUpdate > Constants.LAST_UPDATE_LIMIT || hourRainMm < 0) rainJsonFile.delete();
+			if(diffHoursFromLastUpdate > Constants.LAST_UPDATE_LIMIT || rainEntity.getHour_rain_mm() < 0) rainJsonFile.delete();
 			else {
 
 				rainMmSinceLocalMidnight = rainEntity.getRain_mm_since_local_midnight();

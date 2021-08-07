@@ -14,7 +14,10 @@ def reset_usb_device(id_vendor, id_product):
         print('Device not found')
         return 1
     else:
-        print('Device found ('+dev.product+'), reseting it!')
+        try:
+            print('Device found (' + dev.product + '), reseting it!')
+        except:
+            print('Device found, reseting it!')
         dev.reset()
         return 0
 
