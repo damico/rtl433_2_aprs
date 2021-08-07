@@ -181,6 +181,9 @@ public class ProcessBuilderHelper {
 				isTestFine = true;
 			}
 			
+			int ret = rtlProcess.waitFor();
+			System.out.println("Process rtlTestCaller finished: "+ret);
+			
 			if (rtlProcess.exitValue() != 0) {
 				isTestFine = false;
 				System.out.println("Looking for possible errors calling rtlTestCaller...");
@@ -191,8 +194,7 @@ public class ProcessBuilderHelper {
 				}
 			}
 
-			int ret = rtlProcess.waitFor();
-			System.out.println("Process rtlTestCaller finished: "+ret);
+			
 
 		} catch (Exception e) {
 			System.err.println("Error calling rtlTestCaller: "+this.getClass().getName());
