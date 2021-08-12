@@ -197,12 +197,14 @@ public class ConfigEntity {
 		this.rtlUsbDevice = rtlUsbDevice;
 	}
 
-	public String getRtlUsbDevice() {
-		return rtlUsbDevice;
+	public String getDigiPath() {
+		return digiPath;
 	}
 
-	public void setRtlUsbDevice(String rtlUsbDevice) {
-		this.rtlUsbDevice = rtlUsbDevice;
+	public void setDigiPath(String digiPath) {
+		this.digiPath = digiPath;
 	}
+
+	
 
 }

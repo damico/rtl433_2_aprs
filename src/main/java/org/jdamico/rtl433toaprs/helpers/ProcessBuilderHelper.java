@@ -52,14 +52,19 @@ public class ProcessBuilderHelper {
 	private int zuluCalHour;
 	private String stationName;
 	private String rtl433Cli;
-	public static boolean rtl433Fine = false;
+	public boolean rtl433Fine = false;
 	public Process rtlProcess;
 	public String rtlUsbDevice;
+	public String[] digiPath;
 	
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
 
 
+		if(configEntity.getDigiPath() !=null) digiPath = configEntity.getDigiPath().replaceAll(" ", "").split(",");
+		else digiPath = Constants.DEFAULT_DIGIPATH;
+		
+		
 		if(configEntity.getRtlUsbDevice() != null) rtlUsbDevice = configEntity.getRtlUsbDevice();
 		
 		if(configEntity.getRunningPath() != null) {
@@ -358,7 +363,7 @@ public class ProcessBuilderHelper {
 						+"h"+String.format("%02d" , weatherStationDataEntity.getHumidity().intValue())
 						+stationName.substring(0, stationName.length() >= 36 ? 36: stationName.length()));
 
-				sendPacket(complete_weather_data, soundcardName);
+				sendPacket(complete_weather_data, soundcardName, digiPath);
 
 
 				if(minutes == 60) {
@@ -471,10 +476,10 @@ public class ProcessBuilderHelper {
 
 	}
 
-	private void sendPacket(String complete_weather_data, String soundcardName) {
+	private void sendPacket(String complete_weather_data, String soundcardName, String[] digiPath) {
 		Packet packet = new Packet("APRS",
 				callsign,
-				new String[] {"WIDE1-1", "WIDE2-2"},
+				digiPath, //new String[] {"WIDE1-1", "WIDE2-2"},
 				Packet.AX25_CONTROL_APRS,
 				Packet.AX25_PROTOCOL_NO_LAYER_3,
 				complete_weather_data.getBytes());
