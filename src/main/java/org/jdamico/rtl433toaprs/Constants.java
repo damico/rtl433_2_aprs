@@ -7,4 +7,5 @@ public interface Constants {
 	public static String DEFAULT_RTL_433_CLI = "rtl_433 -F json";
 	public static String DEFAULT_RTL_TEST_CLI = "rtl_test -t";
 	public static int USB_REST_TRIES = 5;
+	public static String[] DEFAULT_DIGIPATH = new String[] {"WIDE1-1", "WIDE2-2"};
 }

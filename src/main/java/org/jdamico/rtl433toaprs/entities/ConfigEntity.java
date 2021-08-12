@@ -24,6 +24,10 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class ConfigEntity {
+	
+	@SerializedName("digi_path")
+	@Expose
+	private String digiPath;
 
 	@SerializedName("rtl_433_cli")
 	@Expose
@@ -177,6 +181,14 @@ public class ConfigEntity {
 
 	public void setRunningPath(String runningPath) {
 		this.runningPath = runningPath;
+	}
+
+	public String getDigiPath() {
+		return digiPath;
+	}
+
+	public void setDigiPath(String digiPath) {
+		this.digiPath = digiPath;
 	}
 
 }

@@ -51,8 +51,9 @@ public class ProcessBuilderHelper {
 	private int zuluCalHour;
 	private String stationName;
 	private String rtl433Cli;
-	public static boolean rtl433Fine = false;
+	public boolean rtl433Fine = false;
 	public static Process rtlProcess;
+	public String[] digiPath;
 	
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
@@ -426,10 +427,10 @@ public class ProcessBuilderHelper {
 
 	}
 
-	private void sendPacket(String complete_weather_data, String soundcardName) {
+	private void sendPacket(String complete_weather_data, String soundcardName, String[] digiPathArray) {
 		Packet packet = new Packet("APRS",
 				callsign,
-				new String[] {"WIDE1-1", "WIDE2-2"},
+				digiPathArray,							//new String[] {"WIDE1-1", "WIDE2-2"},
 				Packet.AX25_CONTROL_APRS,
 				Packet.AX25_PROTOCOL_NO_LAYER_3,
 				complete_weather_data.getBytes());
