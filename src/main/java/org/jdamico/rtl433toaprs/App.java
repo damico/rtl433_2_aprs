@@ -3,8 +3,6 @@ package org.jdamico.rtl433toaprs;
 import java.io.File;
 import java.io.IOException;
 
-import javax.sound.midi.SysexMessage;
-
 import org.jdamico.gpsd.client.GpsdClientRuntime;
 import org.jdamico.javax25.soundcard.Soundcard;
 import org.jdamico.rtl433toaprs.entities.ConfigEntity;
@@ -53,7 +51,7 @@ public class App {
 					BasicHelper.getInstance().posixKill("9", pid);
 					lockFile.delete();
 					System.out.println("There is a STUCKED process already running: "+pid+". Killing it.");
-
+					Thread.sleep(10000);
 				}
 
 			} catch (Exception e) {
@@ -63,7 +61,7 @@ public class App {
 
 		}
 
-
+		boolean isByParameters = false;
 
 		ConfigEntity configEntity = null;
 
@@ -88,6 +86,7 @@ public class App {
 
 				try {
 					configEntity  = new ConfigEntity(args[0], Double.parseDouble(args[1]), Double.parseDouble(args[2]), Integer.parseInt(args[3]), args[4], initialRainMm);
+					isByParameters = true;
 				} catch (Exception e) {
 					System.err.println("Error trying to process config parameters.");
 					System.err.println("Exception at Main class: "+e.getMessage());
@@ -98,7 +97,7 @@ public class App {
 				System.out.println("Trying to run by config file: "+args[0]);
 				File configFile = new File(args[0]);
 				if(configFile != null && configFile.exists() && configFile.isFile()) {
-
+					isByParameters = false;
 					String configJsonStr = null;
 					try {
 						configJsonStr = BasicHelper.getInstance().readTextFileToString(configFile);
@@ -129,29 +128,33 @@ public class App {
 					Soundcard.enumerate();
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 					int usbResetTries = 0;
-					boolean isRtlDeviceFine = false;
-					while(!processBuilderHelper.rtlTestCaller() || usbResetTries < Constants.USB_REST_TRIES) {
+					boolean isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
+					while(!isRtlDeviceFine && usbResetTries <= Constants.USB_REST_TRIES && !isByParameters) {
+
+						System.out.println("Trying to reset usb device, try: "+usbResetTries);
+						processBuilderHelper.rtlResetUsb();
+						usbResetTries++;
+						Thread.sleep(10000);
 						isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
-						if(!isRtlDeviceFine){
-							System.out.println("Trying to reset usb device...");
-							//resetusb
-							usbResetTries++;
-						}else break;
+						System.out.println("isRtlDeviceFine: "+isRtlDeviceFine);
+
 					}
 
-					if(isRtlDeviceFine){
-						processBuilderHelper.rtl433Caller();
+					if(isRtlDeviceFine || isByParameters){
 						try {
 							GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
-							//gpsdClientRuntime.connetAndCollectFromGpsD();
+							gpsdClientRuntime.connetAndCollectFromGpsD();
 						}catch (IOException e) {
 							System.err.println("Error trying to connect to GPSD.");
 							System.err.println("Exception at Main class: "+e.getMessage());
 						}
-					}else {
-						System.err.println("Unable to call RTL-SDR devce.");
-						System.exit(1);
+
+						processBuilderHelper.rtl433Caller();
+
 					}
+					System.out.println("Unable to call RTL-SDR device. (isRtlDeviceFine: "+isRtlDeviceFine+" | isByParameters: "+isByParameters+")");
+					System.exit(1);
+					
 
 
 				}else {

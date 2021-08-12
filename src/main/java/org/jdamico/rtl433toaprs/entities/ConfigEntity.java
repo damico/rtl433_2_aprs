@@ -29,6 +29,12 @@ public class ConfigEntity {
 	@Expose
 	private String digiPath;
 
+
+	@SerializedName("rlt_usb_device")
+	@Expose
+	private String rtlUsbDevice;
+	
+
 	@SerializedName("rtl_433_cli")
 	@Expose
 	private String rtl433Cli;
@@ -183,12 +189,20 @@ public class ConfigEntity {
 		this.runningPath = runningPath;
 	}
 
-	public String getDigiPath() {
-		return digiPath;
+	public String getRtlUsbDevice() {
+		return rtlUsbDevice;
 	}
 
-	public void setDigiPath(String digiPath) {
-		this.digiPath = digiPath;
+	public void setRtlUsbDevice(String rtlUsbDevice) {
+		this.rtlUsbDevice = rtlUsbDevice;
+	}
+
+	public String getRtlUsbDevice() {
+		return rtlUsbDevice;
+	}
+
+	public void setRtlUsbDevice(String rtlUsbDevice) {
+		this.rtlUsbDevice = rtlUsbDevice;
 	}
 
 }

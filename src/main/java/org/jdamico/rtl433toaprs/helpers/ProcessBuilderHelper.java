@@ -35,7 +35,8 @@ public class ProcessBuilderHelper {
 	private static int hours = 0;
 	private static int lastMinute = 0;
 	private Double hourRainMm = .0;
-	private static String baseAppPath;
+	private static String baseDistPath;
+	private static String basePythonPath;
 	private static String rainJsonFilePath;
 	private static String pressureJsonFilePath;
 	private Double latitude; 
@@ -51,21 +52,28 @@ public class ProcessBuilderHelper {
 	private int zuluCalHour;
 	private String stationName;
 	private String rtl433Cli;
-	public boolean rtl433Fine = false;
-	public static Process rtlProcess;
-	public String[] digiPath;
+	public static boolean rtl433Fine = false;
+	public Process rtlProcess;
+	public String rtlUsbDevice;
 	
 
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
 
 
-		if(configEntity.getRunningPath() != null) baseAppPath = configEntity.getRunningPath()+"/dist/";
-		else baseAppPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/dist/";
+		if(configEntity.getRtlUsbDevice() != null) rtlUsbDevice = configEntity.getRtlUsbDevice();
+		
+		if(configEntity.getRunningPath() != null) {
+			baseDistPath = configEntity.getRunningPath()+"/dist/";
+			basePythonPath = configEntity.getRunningPath()+"/python-script/";
+		}else {
+			baseDistPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/dist/";
+			basePythonPath = BasicHelper.getInstance().getAbsoluteRunningPath()+"/python-script/";
+		}
 
-		rainJsonFilePath = baseAppPath+"rain.json";
-		pressureJsonFilePath = baseAppPath+"pressure.json";
+		rainJsonFilePath = baseDistPath+"rain.json";
+		pressureJsonFilePath = baseDistPath+"pressure.json";
 
-		System.out.println("baseAppPath: "+baseAppPath);
+		System.out.println("baseAppPath: "+baseDistPath);
 
 		gson = new Gson();
 		rainJsonFile = new File(rainJsonFilePath);
@@ -73,7 +81,7 @@ public class ProcessBuilderHelper {
 
 			rainEntity = RainEntity.fromJsonFile(rainJsonFile);
 			long diffHoursFromLastUpdate = BasicHelper.getInstance().getDiffHoursBetweenDates(rainEntity.getLastUpdateDate(), new Date());
-			if(diffHoursFromLastUpdate > Constants.LAST_UPDATE_LIMIT) rainJsonFile.delete();
+			if(diffHoursFromLastUpdate > Constants.LAST_UPDATE_LIMIT || rainEntity.getHour_rain_mm() < 0) rainJsonFile.delete();
 			else {
 
 				rainMmSinceLocalMidnight = rainEntity.getRain_mm_since_local_midnight();
@@ -119,12 +127,17 @@ public class ProcessBuilderHelper {
 
 	}
 
-	public boolean rtlTestCaller() {
+	public boolean rtlResetUsb() {
 		
 		boolean isTestFine = false;
+		
+		String[] split = rtlUsbDevice.split(":");
+		String cliSuffix = "0x" + split[0] + " 0x" +split[1];
 
-		System.out.println("Calling rtl_test...("+Constants.DEFAULT_RTL_TEST_CLI+")");
-		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(BasicHelper.getInstance().stringToListCli(Constants.DEFAULT_RTL_TEST_CLI));
+		String resetCli = Constants.DEFAULT_PYTHON_CLI + " " +basePythonPath+Constants.DEFAULT_RESET_RTL_CLI + " "+cliSuffix;
+
+		System.out.println("Calling rtlResetUsb...("+resetCli+")");
+		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(BasicHelper.getInstance().stringToListCli(resetCli));
 
 		InputStreamReader inputStreamReader = null;
 		BufferedReader reader = null;
@@ -135,9 +148,41 @@ public class ProcessBuilderHelper {
 			reader = new BufferedReader(inputStreamReader);
 			String line;
 			while ((line = reader.readLine()) != null) {
-				System.out.println("Return from rtlTestCaller: "+line);
+				System.out.println("Return from rtlResetUsb: "+line);
 				isTestFine = true;
 			}
+			int ret = rtlProcess.waitFor();
+			System.out.println("Process rtlTestCaller finished: "+ret);
+			
+
+		} catch (Exception e) {
+			System.out.println("Error calling rtlResetUsb: "+this.getClass().getName());
+			System.out.println("Exception at (rtlResetUsb) "+this.getClass().getName()+" class: "+e.getMessage());
+		}finally {
+			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
+			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
+			if(rtlProcess!=null) rtlProcess.destroy();
+		}
+		return isTestFine;
+	}
+	
+	public boolean rtlTestCaller() {
+		
+		boolean isTestFine = false;
+
+		System.out.println("Calling rtl_test...("+Constants.DEFAULT_RTL_TEST_CLI+")");
+		ProcessBuilder processBuilder = new ProcessBuilder().inheritIO().command(BasicHelper.getInstance().stringToListCli(Constants.DEFAULT_RTL_TEST_CLI));
+
+		InputStreamReader inputStreamReader = null;
+		BufferedReader reader = null;
+		try {
+			String line;
+			rtlProcess = processBuilder.start();
+			inputStreamReader = new InputStreamReader(rtlProcess.getInputStream());
+			reader = new BufferedReader(inputStreamReader);
+			
+			int ret = rtlProcess.waitFor();
+			System.out.println("Process rtlTestCaller finished: "+ret);
 			
 			if (rtlProcess.exitValue() != 0) {
 				isTestFine = false;
@@ -145,16 +190,15 @@ public class ProcessBuilderHelper {
 				inputStreamReader = new InputStreamReader(rtlProcess.getErrorStream());
 				reader = new BufferedReader(inputStreamReader);
 				while ((line = reader.readLine()) != null) {
-					System.err.println("Error Return from rtlTestCaller: "+line);
+					System.out.println("Error Return from rtlTestCaller: "+line);
 				}
-			}
+			}else isTestFine = true;
 
-			int ret = rtlProcess.waitFor();
-			System.out.println("Process rtlTestCaller finished: "+ret);
+			
 
 		} catch (Exception e) {
-			System.err.println("Error calling rtlTestCaller: "+this.getClass().getName());
-			System.err.println("Exception at (rtlTestCaller) "+this.getClass().getName()+" class: "+e.getMessage());
+			System.out.println("Error calling rtlTestCaller: "+this.getClass().getName());
+			System.out.println("Exception at (rtlTestCaller) "+this.getClass().getName()+" class: "+e.getMessage());
 
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
@@ -201,15 +245,15 @@ public class ProcessBuilderHelper {
 				inputStreamReader = new InputStreamReader(rtlProcess.getErrorStream());
 				reader = new BufferedReader(inputStreamReader);
 				while ((line = reader.readLine()) != null) {
-					System.err.println("Error Return from RTL_433: "+line);
+					System.out.println("Error Return from RTL_433: "+line);
 				}
 			}
 			int ret = rtlProcess.waitFor();
 			System.out.println("Process RTL_433 finished: "+ret);
 
 		} catch (Exception e) {
-			System.err.println("Error calling : "+this.getClass().getName());
-			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
+			System.out.println("Error calling : "+this.getClass().getName());
+			System.out.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
 			if(inputStreamReader!=null) try{ inputStreamReader.close(); }catch (Exception e) {e.printStackTrace();}
@@ -232,7 +276,7 @@ public class ProcessBuilderHelper {
 			
 			if(rainEntity == null) {
 				rainEntity = new RainEntity(weatherStationDataEntity.getRainMm());
-				File rainJsonFolder = new File(baseAppPath);
+				File rainJsonFolder = new File(baseDistPath);
 				if(rainJsonFolder == null || !rainJsonFolder.exists()) rainJsonFolder.mkdir();
 				BasicHelper.getInstance().writeStrToFile(gson.toJson(rainEntity), rainJsonFilePath);
 			}
@@ -427,10 +471,10 @@ public class ProcessBuilderHelper {
 
 	}
 
-	private void sendPacket(String complete_weather_data, String soundcardName, String[] digiPathArray) {
+	private void sendPacket(String complete_weather_data, String soundcardName) {
 		Packet packet = new Packet("APRS",
 				callsign,
-				digiPathArray,							//new String[] {"WIDE1-1", "WIDE2-2"},
+				new String[] {"WIDE1-1", "WIDE2-2"},
 				Packet.AX25_CONTROL_APRS,
 				Packet.AX25_PROTOCOL_NO_LAYER_3,
 				complete_weather_data.getBytes());
