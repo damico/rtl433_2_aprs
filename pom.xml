@@ -48,6 +48,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>rtl433toaprs</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
@@ -73,6 +74,7 @@
 					</execution>
 					
 					<execution>
+						<id>packet-tester</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
