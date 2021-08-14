@@ -72,7 +72,16 @@
 							</descriptorRefs>
 						</configuration>
 					</execution>
+
 					
+
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
 					<execution>
 						<id>packet-tester</id>
 						<phase>package</phase>
@@ -94,13 +103,17 @@
 
 							</archive>
 							<descriptorRefs>
-								<descriptorRef>packet-tester</descriptorRef>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
+							<finalName>packet-tester</finalName>
 						</configuration>
 					</execution>
+
 					
+
 				</executions>
 			</plugin>
+			
 		</plugins>
 	</build>
 </project>
