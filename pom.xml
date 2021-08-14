@@ -71,6 +71,32 @@
 							</descriptorRefs>
 						</configuration>
 					</execution>
+					
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<archive>
+								<manifest>
+									<mainClass>
+										org.jdamico.rtl433toaprs.PacketTester
+									</mainClass>
+								</manifest>
+
+								<manifestEntries>
+									<Implementation-Vendor>Jose Damico (PU2LVM)</Implementation-Vendor>
+									<Implementation-Version>${project.version}</Implementation-Version>
+								</manifestEntries>
+
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>packet-tester</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+					</execution>
+					
 				</executions>
 			</plugin>
 		</plugins>

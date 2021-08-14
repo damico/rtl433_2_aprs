@@ -57,7 +57,9 @@ public class ProcessBuilderHelper {
 	public String rtlUsbDevice;
 	public String[] digiPath;
 	
-
+	public ProcessBuilderHelper(String soundcardName, String callsign) {
+		prepareModem(soundcardName, callsign);
+	}
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
 
 
@@ -110,26 +112,30 @@ public class ProcessBuilderHelper {
 		else stationName = Constants.APP_NAME;
 
 		soundcardName = configEntity.getSoundcardName();
+		this.latitude = configEntity.getDecimalLat();
+		this.longitude = configEntity.getDecimalLng();
+		this.tz = configEntity.getTimezone();
+		
+		prepareModem(soundcardName, configEntity.getCallsign());
 
+
+
+	}
+	private void prepareModem(String soundcardName, String callsign) {
 		PacketDemodulator multi = null;
 
 		try {
 			multi = new Afsk1200MultiDemodulator(rate, new PacketHandlerImpl());
 			mod = new Afsk1200Modulator(rate);
 			sc = new Soundcard(rate, null, soundcardName, buffer_size, multi, mod);
-			this.callsign = configEntity.getCallsign();
-			this.latitude = configEntity.getDecimalLat();
-			this.longitude = configEntity.getDecimalLng();
-			this.tz = configEntity.getTimezone();
+			this.callsign = callsign;
+			
 		} catch (Exception e) {
 			System.err.println("Error initializing: "+this.getClass().getName());
 			System.err.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}
-
-
-
 	}
 
 	public boolean rtlResetUsb() {
@@ -363,7 +369,7 @@ public class ProcessBuilderHelper {
 						+"h"+String.format("%02d" , weatherStationDataEntity.getHumidity().intValue())
 						+stationName.substring(0, stationName.length() >= 36 ? 36: stationName.length()));
 
-				sendPacket(complete_weather_data, soundcardName, digiPath);
+				sendPacket(complete_weather_data, digiPath);
 
 
 				if(minutes == 60) {
@@ -476,7 +482,7 @@ public class ProcessBuilderHelper {
 
 	}
 
-	private void sendPacket(String complete_weather_data, String soundcardName, String[] digiPath) {
+	public void sendPacket(String complete_weather_data, String[] digiPath) {
 		Packet packet = new Packet("APRS",
 				callsign,
 				digiPath, //new String[] {"WIDE1-1", "WIDE2-2"},
