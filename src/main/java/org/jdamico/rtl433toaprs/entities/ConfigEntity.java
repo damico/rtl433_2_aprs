@@ -25,6 +25,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class ConfigEntity {
 	
+	
+	@SerializedName("destination")
+	@Expose
+	private String destination;
+	
 	@SerializedName("digi_path")
 	@Expose
 	private String digiPath;
@@ -203,6 +208,14 @@ public class ConfigEntity {
 
 	public void setDigiPath(String digiPath) {
 		this.digiPath = digiPath;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
 	}
 
 	

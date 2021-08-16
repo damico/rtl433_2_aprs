@@ -10,4 +10,5 @@ public interface Constants {
 	public static String[] DEFAULT_DIGIPATH = new String[] {"WIDE1-1", "WIDE2-2"};
 	public static String DEFAULT_RESET_RTL_CLI = "py_usb_reset.py";
 	public static String DEFAULT_PYTHON_CLI = "python3";
+	public static String DEFAULT_DESTINATION = "APRS";
 }

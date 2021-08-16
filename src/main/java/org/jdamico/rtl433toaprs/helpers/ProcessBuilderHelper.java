@@ -56,6 +56,7 @@ public class ProcessBuilderHelper {
 	public Process rtlProcess;
 	public String rtlUsbDevice;
 	public String[] digiPath;
+	public String destination;
 	
 	public ProcessBuilderHelper(String soundcardName, String callsign) {
 		prepareModem(soundcardName, callsign);
@@ -63,6 +64,10 @@ public class ProcessBuilderHelper {
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
 
 
+		if(configEntity.getDestination() !=null) destination = configEntity.getDestination();
+		else destination = Constants.DEFAULT_DESTINATION;
+		
+		
 		if(configEntity.getDigiPath() !=null) digiPath = configEntity.getDigiPath().replaceAll(" ", "").split(",");
 		else digiPath = Constants.DEFAULT_DIGIPATH;
 		
@@ -369,7 +374,7 @@ public class ProcessBuilderHelper {
 						+"h"+String.format("%02d" , weatherStationDataEntity.getHumidity().intValue())
 						+stationName.substring(0, stationName.length() >= 36 ? 36: stationName.length()));
 
-				sendPacket(complete_weather_data, digiPath);
+				sendPacket(destination, complete_weather_data, digiPath);
 
 
 				if(minutes == 60) {
@@ -482,8 +487,8 @@ public class ProcessBuilderHelper {
 
 	}
 
-	public void sendPacket(String complete_weather_data, String[] digiPath) {
-		Packet packet = new Packet("APRS",
+	public void sendPacket(String destination, String complete_weather_data, String[] digiPath) {
+		Packet packet = new Packet(destination,
 				callsign,
 				digiPath, //new String[] {"WIDE1-1", "WIDE2-2"},
 				Packet.AX25_CONTROL_APRS,

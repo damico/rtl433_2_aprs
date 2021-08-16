@@ -11,5 +11,6 @@
 	"rtl_433_cli": "/usr/local/bin/rtl_433 -F json",
 	"running_path": "/opt/rtl433toaprs",
 	"rlt_usb_device": "1d6b:0003",
-	"digi_path": "WIDE1-1,WIDE2-2"
+	"digi_path": "WIDE1-1,WIDE2-2",
+	"destination": "APRS"
 }
