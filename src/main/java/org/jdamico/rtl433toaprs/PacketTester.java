@@ -16,7 +16,7 @@ public class PacketTester {
 
 				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(args[0], args[1]);
 				int times = 1;
-				if(args[5]!=null) {
+				if(args.length == 6 && args[5]!=null) {
 					times = Integer.parseInt(args[5]);
 				}
 				for (int i = 0; i < times; i++) {
