@@ -12,7 +12,7 @@ public class PacketTester {
 					+ "Option 5 parameters: soundcardname callsign destination aprsmsg digpath \n"
 					+ "Option 6 parameters: soundcardname callsign destination aprsmsg digpath numberoftimestorepeatmsg\n\n"
 					+ "Example: \"Headphones [plughw:1,0]\" PU2LVM-13 APRS @141244z2332.53S/04645.51W_131/003g004t067r000p000P000b10142h70Test ARISS,WIDE2-1 3";
-			if(args.length == 4 || args.length == 5) {
+			if(args.length == 5 || args.length == 6) {
 
 				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(args[0], args[1]);
 				int times = 1;
