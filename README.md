@@ -9,6 +9,10 @@ Parser of RF Data from Weather Stations to be sent over APRS, written in Java
 - Adafruit_BMP.BMP085: https://github.com/adafruit/Adafruit_Python_BMP
 - PYUSB: https://pyusb.github.io/pyusb/
 
+## Compiling
+- Satisfy the software dependencies;
+- Just clone this repository and run the following maven command `mvn clean install -DskipTests`.
+
 ## Software
 
 ### Diagram
