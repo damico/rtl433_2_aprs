@@ -11,7 +11,7 @@ Parser of RF Data from Weather Stations to be sent over APRS, written in Java
 
 ## Compiling
 - Satisfy the software dependencies;
-- Just clone this repository and run the following maven command `mvn clean install -DskipTests`.
+- Just clone this repository and run the following maven command `mvn clean install -DskipTests`. If you want to generate a executable jar package use this command: `mvn clean install -DskipTests package`.
 
 ## Software
 
