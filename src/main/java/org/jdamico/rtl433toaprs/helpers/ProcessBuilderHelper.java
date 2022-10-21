@@ -47,6 +47,7 @@ public class ProcessBuilderHelper {
 	private Gson gson;
 	private RainEntity rainEntity;
 	private File rainJsonFile;
+	private File logFile;
 	private Double rainMmSinceLocalMidnight = .0;
 	private Double dailyRainMm = .0;
 	private int zuluCalHour;
@@ -282,7 +283,7 @@ public class ProcessBuilderHelper {
 		try {
 
 			WeatherStationDataEntity weatherStationDataEntity = gson.fromJson(jsonStr, WeatherStationDataEntity.class);
-			
+			weatherStationDataEntity.setInitDate(App.initDate);
 			
 			if(!rtl433Fine) {
 				BasicHelper.getInstance().writeStrToFile("0@"+App.pid, App.lockFile);
@@ -375,6 +376,8 @@ public class ProcessBuilderHelper {
 						+stationName.substring(0, stationName.length() >= 36 ? 36: stationName.length()));
 
 				sendPacket(destination, complete_weather_data, digiPath);
+				weatherStationDataEntity.setMessageCount(App.messageCount++);
+				logToDisk(weatherStationDataEntity);
 
 
 				if(minutes == 60) {
@@ -402,6 +405,12 @@ public class ProcessBuilderHelper {
 
 
 
+	private void logToDisk(WeatherStationDataEntity weatherStationDataEntity) throws IOException {
+		logFile = new File("/tmp/latest.data");
+		if(logFile.exists()) logFile.delete();
+		BasicHelper.getInstance().writeStrToFile(gson.toJson(weatherStationDataEntity), logFile);		
+	}
+	
 	private void setRainHourly(Double hourRainMm, int calHour, RainEntity rainEntity) throws IOException {
 		switch (calHour) {
 		case 1:

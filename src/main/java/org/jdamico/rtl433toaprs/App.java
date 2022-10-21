@@ -2,6 +2,7 @@ package org.jdamico.rtl433toaprs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import org.jdamico.gpsd.client.GpsdClientRuntime;
 import org.jdamico.javax25.soundcard.Soundcard;
@@ -27,7 +28,9 @@ import com.google.gson.Gson;
  */
 
 public class App {
-
+	
+	public static Date initDate = new Date();
+	public static int messageCount = 0;
 	public static File lockFile; 
 	public static String pid;
 	public static void main( String[] args ){

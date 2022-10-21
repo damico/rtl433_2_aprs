@@ -1,5 +1,7 @@
 package org.jdamico.rtl433toaprs.entities;
 
+import java.util.Date;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -47,6 +49,9 @@ public class WeatherStationDataEntity {
 	@SerializedName("mic")
 	@Expose
 	private String mic;
+	
+	private int messageCount;
+	private Date initDate;
 
 	private Double windMaxMH;
 	
@@ -251,6 +256,22 @@ public class WeatherStationDataEntity {
 
 	public void setRainInSinceLocalMidnight(Double rainInSinceLocalMidnight) {
 		this.rainInSinceLocalMidnight = rainInSinceLocalMidnight;
+	}
+
+	public int getMessageCount() {
+		return messageCount;
+	}
+
+	public void setMessageCount(int messageCount) {
+		this.messageCount = messageCount;
+	}
+
+	public Date getInitDate() {
+		return initDate;
+	}
+
+	public void setInitDate(Date initDate) {
+		this.initDate = initDate;
 	}
 
 }
