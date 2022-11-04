@@ -251,7 +251,7 @@ public class ProcessBuilderHelper {
 			while ((line = reader.readLine()) != null) {
 				System.out.println("Return from RTL_433: "+line);
 				try {
-					jsonParser(latitude, longitude, tz, line);
+					if(line.length() > 10) jsonParser(latitude, longitude, tz, line);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
