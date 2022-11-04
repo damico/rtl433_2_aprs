@@ -297,7 +297,7 @@ public class ProcessBuilderHelper {
 				if(rainJsonFolder == null || !rainJsonFolder.exists()) rainJsonFolder.mkdir();
 				String rainJsonStr = gson.toJson(rainEntity);
 				BasicHelper.getInstance().writeStrToFile(rainJsonStr, rainJsonFilePath);
-				System.out.println(rainJsonFilePath+" created, with "+weatherStationDataEntity.getRainMm()+" | "+);
+				System.out.println(rainJsonFilePath+" created, with "+weatherStationDataEntity.getRainMm()+" | "+rainJsonStr);
 			}
 
 
