@@ -347,7 +347,6 @@ public class ProcessBuilderHelper {
 				
 
 				weatherStationDataEntity.setRainMm(dailyRainMm);	
-				if(weatherStationDataEntity.getTemperatureC() == null) weatherStationDataEntity.setTemperatureC(20.0);
 				weatherStationDataEntity = weatherStationDataEntity.toImperial();
 
 				System.out.println("RainHourly: "+hourRainMm+" | "+zuluCalHour + " | "+weatherStationDataEntity.getRainIn().intValue());
@@ -357,6 +356,13 @@ public class ProcessBuilderHelper {
 					latitude = VerifierThread.Y;
 					System.out.println("Position updated by GPSD Client.");
 				}
+				
+				String humMsg = "";
+				String tempMsg = "";
+				if(weatherStationDataEntity.getTemperatureF() !=null) tempMsg="t"+String.format("%03d" , weatherStationDataEntity.getTemperatureF().intValue());
+				if(weatherStationDataEntity.getHumidity() !=null) humMsg = "h"+String.format("%02d" , weatherStationDataEntity.getHumidity().intValue());
+				
+				
 
 				cal.add(Calendar.HOUR_OF_DAY, tz);
 				zuluCalHour = cal.get(Calendar.HOUR_OF_DAY);
@@ -368,12 +374,12 @@ public class ProcessBuilderHelper {
 						+"_"+String.format("%03d" , weatherStationDataEntity.getWindDirDeg())
 						+"/"+String.format("%03d" , weatherStationDataEntity.getWindAvgMH().intValue())
 						+"g"+String.format("%03d" , weatherStationDataEntity.getWindMaxMH().intValue())
-						+"t"+String.format("%03d" , weatherStationDataEntity.getTemperatureF().intValue())
+						+tempMsg
 						+"r"+String.format("%03d" , weatherStationDataEntity.getPastHourRainIn().intValue())
 						+"p"+String.format("%03d" , weatherStationDataEntity.getRainIn().intValue())
 						+"P"+String.format("%03d" , weatherStationDataEntity.getRainInSinceLocalMidnight().intValue())
 						+"b"+pressureValue
-						+"h"+String.format("%02d" , weatherStationDataEntity.getHumidity().intValue())
+						+humMsg
 						+stationName.substring(0, stationName.length() >= 36 ? 36: stationName.length()));
 
 				sendPacket(destination, complete_weather_data, digiPath);
