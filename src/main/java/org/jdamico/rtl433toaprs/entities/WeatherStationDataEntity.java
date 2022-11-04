@@ -182,12 +182,12 @@ public class WeatherStationDataEntity {
 	}
 
 	public WeatherStationDataEntity toImperial() {
-		setWindAvgMH(windAvgMS*2.23694);
-		setWindMaxMH(windMaxMS*2.23694);
-		setTemperatureF( (temperatureC*9/5)+32 );
-		setRainIn(rainMm != null ? (rainMm/25.4)*100 : 0); //in hundredths of inches
-		setPastHourRainIn(pastHourRainMM !=null ? (pastHourRainMM/25.4)*100 : 0); //in hundredths of inches
-		setRainInSinceLocalMidnight(rainMmSinceLocalMidnight != null ? (rainMmSinceLocalMidnight/25.4)*100 : 0); //in hundredths of inches
+		if(windAvgMS != null) setWindAvgMH(windAvgMS*2.23694);
+		if(windMaxMS != null) setWindMaxMH(windMaxMS*2.23694);
+		if(temperatureC != null) setTemperatureF( (temperatureC*9/5)+32 );
+		if(rainMm != null) setRainIn(rainMm != null ? (rainMm/25.4)*100 : 0); //in hundredths of inches
+		if(pastHourRainMM != null) setPastHourRainIn(pastHourRainMM !=null ? (pastHourRainMM/25.4)*100 : 0); //in hundredths of inches
+		if(rainMmSinceLocalMidnight != null) setRainInSinceLocalMidnight(rainMmSinceLocalMidnight != null ? (rainMmSinceLocalMidnight/25.4)*100 : 0); //in hundredths of inches
 		
 		System.out.println("getRainIn: "+ getRainIn()+" | getPastHourRainIn: "+getPastHourRainIn()+" | getRainInSinceLocalMidnight: "+getRainInSinceLocalMidnight());
 		
