@@ -331,7 +331,7 @@ public class ProcessBuilderHelper {
 				System.out.println(hours+"h"+minutes);
 
 				double rainMM = weatherStationDataEntity.getRainMm()-rainEntity.getInitialRain();
-				if(rainMM >= 0) {
+				if(rainMM > 0) {
 					System.out.println("Raining: "+rainMM+" | "+weatherStationDataEntity.getRainMm()+" | "+rainEntity.getInitialRain());
 					rainEntity.setInitialRain(weatherStationDataEntity.getRainMm());
 					
