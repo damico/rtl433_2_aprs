@@ -346,7 +346,8 @@ public class ProcessBuilderHelper {
 
 				
 
-				weatherStationDataEntity.setRainMm(dailyRainMm);		
+				weatherStationDataEntity.setRainMm(dailyRainMm);	
+				if(weatherStationDataEntity.getTemperatureC() == null) weatherStationDataEntity.setTemperatureC(20.0);
 				weatherStationDataEntity = weatherStationDataEntity.toImperial();
 
 				System.out.println("RainHourly: "+hourRainMm+" | "+zuluCalHour + " | "+weatherStationDataEntity.getRainIn().intValue());
