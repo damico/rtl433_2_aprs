@@ -18,6 +18,7 @@ import com.google.gson.annotations.SerializedName;
 	"gpsd_port": "",
 	"station_name": "SciCrop SE-2900",
 	"rtl_433_cli": "/usr/local/bin/rtl_433 -F json"
+	"loop_interval_minutes": 30
 }
  
  * 
@@ -77,6 +78,18 @@ public class ConfigEntity {
 	@SerializedName("gpsd_port")
 	@Expose
 	private Integer gpsdPort;
+	
+	@SerializedName("loop_interval_minutes")
+	@Expose
+	private Integer loopIntervalMinutes;
+
+	public Integer getLoopIntervalMinutes() {
+		return loopIntervalMinutes;
+	}
+
+	public void setLoopIntervalMinutes(Integer loopIntervalMinutes) {
+		this.loopIntervalMinutes = loopIntervalMinutes;
+	}
 
 	public String getCallsign() {
 		return callsign;
