@@ -10,8 +10,20 @@ Parser of RF Data from Weather Stations to be sent over APRS, written in Java
 - PYUSB: https://pyusb.github.io/pyusb/
 
 ## Compiling
-- Satisfy the software dependencies;
-- Just clone this repository and run the following maven command `mvn clean install -DskipTests`. If you want to generate a executable jar package use this command: `mvn clean install -DskipTests package`.
+
+```
+git clone https://github.com/damico/rtl433_2_aprs
+git clone https://github.com/damico/javAX25
+git clone https://github.com/damico/gpsd.client
+cd gpsd.client
+mvn clean install -DskipTests
+cd ../javAX25
+mvn clean install -DskipTests
+cd ../rtl433_2_aprs
+mvn clean install -DskipTests
+```
+
+- If you want to generate a executable jar package use this command: `mvn clean install -DskipTests package`.
 
 ## Software
 

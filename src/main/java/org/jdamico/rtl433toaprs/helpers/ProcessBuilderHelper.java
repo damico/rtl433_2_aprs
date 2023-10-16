@@ -58,6 +58,7 @@ public class ProcessBuilderHelper {
 	public String rtlUsbDevice;
 	public String[] digiPath;
 	public String destination;
+	public Integer loopIntervalMinutes = 15;
 	
 	public ProcessBuilderHelper(String soundcardName, String callsign) {
 		prepareModem(soundcardName, callsign);
@@ -74,6 +75,8 @@ public class ProcessBuilderHelper {
 		
 		
 		if(configEntity.getRtlUsbDevice() != null) rtlUsbDevice = configEntity.getRtlUsbDevice();
+		
+		if(configEntity.getLoopIntervalMinutes() != null) loopIntervalMinutes = configEntity.getLoopIntervalMinutes();
 		
 		if(configEntity.getRunningPath() != null) {
 			baseDistPath = configEntity.getRunningPath()+"/dist/";
@@ -386,10 +389,11 @@ public class ProcessBuilderHelper {
 						+humMsg
 						+stationName.substring(0, stationName.length() >= 36 ? 36: stationName.length()));
 
-				sendPacket(destination, complete_weather_data, digiPath);
-				weatherStationDataEntity.setMessageCount(App.messageCount++);
-				logToDisk(weatherStationDataEntity);
-
+				if(minutes == 1 || (minutes % loopIntervalMinutes == 0)) {
+					sendPacket(destination, complete_weather_data, digiPath);
+					weatherStationDataEntity.setMessageCount(App.messageCount++);
+					logToDisk(weatherStationDataEntity);
+				}
 
 				if(minutes == 60) {
 					if(localCalHour == 0) rainMmSinceLocalMidnight = .0;
