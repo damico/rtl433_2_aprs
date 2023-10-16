@@ -331,7 +331,7 @@ public class ProcessBuilderHelper {
 			if(lastMinute != calMinute) {
 				lastMinute = calMinute;
 				minutes++;
-				System.out.println(hours+"h"+minutes);
+				System.out.println("Time: "+hours+"h"+minutes+" (loopIntervalMinutes: "+loopIntervalMinutes+")");
 
 				double rainMM = weatherStationDataEntity.getRainMm()-rainEntity.getInitialRain();
 				if(rainMM >= 0) {
