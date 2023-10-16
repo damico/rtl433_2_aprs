@@ -389,7 +389,7 @@ public class ProcessBuilderHelper {
 						+humMsg
 						+stationName.substring(0, stationName.length() >= 36 ? 36: stationName.length()));
 
-				if(minutes == 0 || (minutes % loopIntervalMinutes == 0)) {
+				if(minutes == 1 || (minutes % loopIntervalMinutes == 0)) {
 					sendPacket(destination, complete_weather_data, digiPath);
 					weatherStationDataEntity.setMessageCount(App.messageCount++);
 					logToDisk(weatherStationDataEntity);
