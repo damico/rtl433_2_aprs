@@ -53,3 +53,19 @@ If you cannot be sure if an encoded APRS data has been sent/audible by your soun
 
 1. Force unmute the Master volume: `$ amixer sset Master unmute` or maybe `$ amixer sset Headphones unmute`
 2. Force test audio signals over headphones and speakers: `$ speaker-test -t wav -c 6`
+
+## Supported Weather Stations
+
+- WS1080/WH3080
+![image](https://github.com/damico/rtl433_2_aprs/assets/692043/9b9f6364-4f82-4bab-930c-d6c3eca9029b)
+
+- WH25
+![image](https://github.com/damico/rtl433_2_aprs/assets/692043/c99ef333-831f-4c3e-bb89-1e396c592b31)
+
+- WS24/HP1000
+![image](https://github.com/damico/rtl433_2_aprs/assets/692043/75667293-112d-4f64-8cfa-18e4ba7914b9)
+
+
+
+
+
