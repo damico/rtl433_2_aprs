@@ -21,6 +21,8 @@ import org.jdamico.rtl433toaprs.entities.ConfigEntity;
 import org.jdamico.rtl433toaprs.entities.PressureEntity;
 import org.jdamico.rtl433toaprs.entities.RainEntity;
 import org.jdamico.rtl433toaprs.entities.WeatherStationDataEntity;
+import org.jdamico.rtl433toaprs.threads.Ax25DecoderThread;
+import org.jdamico.rtl433toaprs.threads.IgateThread;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -43,7 +45,12 @@ public class ProcessBuilderHelper {
 	private Double longitude; 
 	private Integer tz;
 	private String callsign;
-	private String soundcardName;
+	private String soundcardOutput;
+	private String soundcardInput;
+	private Boolean isIgate;
+	private String igateHost;
+	private Integer igatePort;
+	private String igatePasscode;
 	private Gson gson;
 	private RainEntity rainEntity;
 	private File rainJsonFile;
@@ -60,8 +67,8 @@ public class ProcessBuilderHelper {
 	public String destination;
 	public Integer loopIntervalMinutes = 15;
 	
-	public ProcessBuilderHelper(String soundcardName, String callsign) {
-		prepareModem(soundcardName, callsign);
+	public ProcessBuilderHelper(String soundcardOutput, String soundcardInput, String callsign) {
+		prepareModem(soundcardOutput, soundcardInput, callsign);
 	}
 	public ProcessBuilderHelper(ConfigEntity configEntity) throws Exception {
 
@@ -120,23 +127,29 @@ public class ProcessBuilderHelper {
 		if(configEntity.getStationName() !=null) stationName = configEntity.getStationName();
 		else stationName = Constants.APP_NAME;
 
-		soundcardName = configEntity.getSoundcardName();
+		this.soundcardOutput = configEntity.getSoundcardOutput();
+		this.soundcardInput = configEntity.getSoundcardInput();
+		this.isIgate = configEntity.getIsIgate();
+		this.igateHost = configEntity.getIgateHost();
+		this.igatePort = configEntity.getIgatePort();
+		this.igatePasscode = configEntity.getIgatePasscode();
+		
 		this.latitude = configEntity.getDecimalLat();
 		this.longitude = configEntity.getDecimalLng();
 		this.tz = configEntity.getTimezone();
 		
-		prepareModem(soundcardName, configEntity.getCallsign());
+		prepareModem(soundcardOutput, soundcardInput, configEntity.getCallsign());
 
 
 
 	}
-	private void prepareModem(String soundcardName, String callsign) {
+	private void prepareModem(String soundcardOutput, String soundcardInput, String callsign) {
 		PacketDemodulator multi = null;
 
 		try {
 			multi = new Afsk1200MultiDemodulator(rate, new PacketHandlerImpl());
 			mod = new Afsk1200Modulator(rate);
-			sc = new Soundcard(rate, null, soundcardName, buffer_size, multi, mod);
+			sc = new Soundcard(rate, soundcardInput, soundcardOutput, buffer_size, multi, mod);
 			this.callsign = callsign;
 			
 		} catch (Exception e) {
@@ -230,7 +243,13 @@ public class ProcessBuilderHelper {
 
 	public void rtl433Caller() {
 
+		Thread ax25DecoderThread = new Ax25DecoderThread(sc);
+		ax25DecoderThread.start();
 		
+		if(isIgate) {
+			Thread igateThread = new IgateThread(callsign, igateHost, igatePort, igatePasscode, latitude, longitude);
+			igateThread.start();
+		}
 		
 		List<String> rtl_cli = null;
 		if(rtl433Cli == null) {

@@ -14,7 +14,7 @@ public class PacketTester {
 					+ "Example: \"Headphones [plughw:1,0]\" PU2LVM-13 APRS @141244z2332.53S/04645.51W_131/003g004t067r000p000P000b10142h70Test ARISS,WIDE2-1 3";
 			if(args.length == 5 || args.length == 6) {
 
-				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(args[0], args[1]);
+				ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(args[0], null, args[1]);
 				int times = 1;
 				if(args.length == 6 && args[5]!=null) {
 					times = Integer.parseInt(args[5]);
