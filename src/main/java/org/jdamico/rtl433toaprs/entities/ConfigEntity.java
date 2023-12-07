@@ -49,6 +49,21 @@ public class ConfigEntity {
 	@Expose
 	private String runningPath;
 	
+	@SerializedName("is_igate")
+	@Expose
+	private Boolean isIgate;
+	
+	@SerializedName("igate_host")
+	@Expose
+	private String igateHost;
+	
+	@SerializedName("igate_port")
+	@Expose
+	private Integer igatePort;
+	
+	@SerializedName("igate_passcode")
+	@Expose
+	private String igatePasscode;
 	
 	@SerializedName("station_name")
 	@Expose
@@ -66,9 +81,15 @@ public class ConfigEntity {
 	@SerializedName("timezone")
 	@Expose
 	private Integer timezone;
-	@SerializedName("soundcard_name")
+	
+	@SerializedName("soundcard_input")
 	@Expose
-	private String soundcardName;
+	private String soundcardInput;
+
+	@SerializedName("soundcard_output")
+	@Expose
+	private String soundcardOutput;
+	
 	@SerializedName("initial_rain_mm")
 	@Expose
 	private Double initialRainMm;
@@ -123,12 +144,22 @@ public class ConfigEntity {
 		this.timezone = timezone;
 	}
 
-	public String getSoundcardName() {
-		return soundcardName;
+	public String getSoundcardOutput() {
+		return soundcardOutput;
 	}
 
-	public void setSoundcardName(String soundcardName) {
-		this.soundcardName = soundcardName;
+	public void setSoundcardOutput(String soundcardOutput) {
+		this.soundcardOutput = soundcardOutput;
+	}
+
+	
+	
+	public String getSoundcardInput() {
+		return soundcardInput;
+	}
+
+	public void setSoundcardInput(String soundcardInput) {
+		this.soundcardInput = soundcardInput;
 	}
 
 	public Double getInitialRainMm() {
@@ -162,7 +193,7 @@ public class ConfigEntity {
 		this.decimalLat = decimalLat;
 		this.decimalLng = decimalLng;
 		this.timezone = timezone;
-		this.soundcardName = soundcardName;
+		this.soundcardOutput = soundcardName;
 		this.initialRainMm = initialRainMm;
 		this.gpsdHost = gpsdHost;
 		this.gpsdPort = gpsdPort;
@@ -175,7 +206,7 @@ public class ConfigEntity {
 		this.decimalLat = decimalLat;
 		this.decimalLng = decimalLng;
 		this.timezone = timezone;
-		this.soundcardName = soundcardName;
+		this.soundcardOutput = soundcardName;
 		this.initialRainMm = initialRainMm;
 	}
 	
@@ -229,6 +260,38 @@ public class ConfigEntity {
 
 	public void setDestination(String destination) {
 		this.destination = destination;
+	}
+
+	public Boolean getIsIgate() {
+		return isIgate;
+	}
+
+	public void setIsIgate(Boolean isIgate) {
+		this.isIgate = isIgate;
+	}
+
+	public String getIgateHost() {
+		return igateHost;
+	}
+
+	public void setIgateHost(String igateHost) {
+		this.igateHost = igateHost;
+	}
+
+	public Integer getIgatePort() {
+		return igatePort;
+	}
+
+	public void setIgatePort(Integer igatePort) {
+		this.igatePort = igatePort;
+	}
+
+	public String getIgatePasscode() {
+		return igatePasscode;
+	}
+
+	public void setIgatePasscode(String igatePasscode) {
+		this.igatePasscode = igatePasscode;
 	}
 
 	

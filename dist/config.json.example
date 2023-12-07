@@ -3,7 +3,8 @@
 	"decimal_lat": 1,
 	"decimal_lng": 1,
 	"timezone": 1,
-	"soundcard_name": "",
+	"soundcard_output": "",
+	"soundcard_input": "",
 	"initial_rain_mm": 1,
 	"gpsd_host": "",
 	"gpsd_port": "",
@@ -13,5 +14,9 @@
 	"rlt_usb_device": "1d6b:0003",
 	"digi_path": "WIDE1-1,WIDE2-2",
 	"destination": "APRS",
-	"loop_interval_minutes": 30
+	"loop_interval_minutes": 30,
+	"is_igate": true,
+	"igate_host": "",
+	"igate_port": 0,
+	"igate_passcode": ""
 }
