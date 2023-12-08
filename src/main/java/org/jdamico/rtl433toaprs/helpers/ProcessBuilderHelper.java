@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jdamico.gpsd.client.threads.VerifierThread;
@@ -247,6 +248,7 @@ public class ProcessBuilderHelper {
 		ax25DecoderThread.start();
 		
 		if(isIgate) {
+			sc.receivedPackedMap = new HashMap<>();
 			Thread igateThread = new IgateThread(callsign, igateHost, igatePort, igatePasscode, latitude, longitude);
 			igateThread.start();
 		}

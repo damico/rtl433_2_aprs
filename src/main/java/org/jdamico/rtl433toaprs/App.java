@@ -107,7 +107,6 @@ public class App {
 						Gson gson = new Gson();
 						configEntity = gson.fromJson(configJsonStr, ConfigEntity.class);
 					} catch (Exception e) {
-						System.err.println("Error trying to connect to GPSD.");
 						System.err.println("Exception at Main class: "+e.getMessage());
 					}
 
@@ -145,8 +144,10 @@ public class App {
 
 					if(isRtlDeviceFine || isByParameters){
 						try {
+							if(configEntity.getDecimalLng() == null && configEntity.getDecimalLat() == null) {
 							GpsdClientRuntime gpsdClientRuntime = new GpsdClientRuntime(configEntity.getGpsdHost(), configEntity.getGpsdPort());
 							gpsdClientRuntime.connetAndCollectFromGpsD();
+							}else System.out.println("Usign location from config file: "+configEntity.getDecimalLng()+", "+configEntity.getDecimalLat() == null);
 						}catch (IOException e) {
 							System.err.println("Error trying to connect to GPSD.");
 							System.err.println("Exception at Main class: "+e.getMessage());

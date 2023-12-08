@@ -40,6 +40,11 @@
 			<artifactId>gpsd.client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jdamico</groupId>
+			<artifactId>jbasigate</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
