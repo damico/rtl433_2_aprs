@@ -244,10 +244,11 @@ public class ProcessBuilderHelper {
 
 	public void rtl433Caller() {
 
-		Thread ax25DecoderThread = new Ax25DecoderThread(sc);
-		ax25DecoderThread.start();
+		
 		
 		if(isIgate) {
+			Thread ax25DecoderThread = new Ax25DecoderThread(sc);
+			ax25DecoderThread.start();
 			sc.receivedPackedMap = new HashMap<>();
 			Thread igateThread = new IgateThread(callsign, igateHost, igatePort, igatePasscode, latitude, longitude);
 			igateThread.start();
