@@ -244,8 +244,6 @@ public class ProcessBuilderHelper {
 
 	public void rtl433Caller() {
 
-		
-		
 		if(isIgate) {
 			Thread ax25DecoderThread = new Ax25DecoderThread(sc);
 			ax25DecoderThread.start();
