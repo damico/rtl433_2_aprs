@@ -157,7 +157,7 @@ public class App {
 
 					}
 					System.out.println("Unable to call RTL-SDR device. (isRtlDeviceFine: "+isRtlDeviceFine+" | isByParameters: "+isByParameters+")");
-					System.exit(1);
+					//System.exit(1);
 					
 
 

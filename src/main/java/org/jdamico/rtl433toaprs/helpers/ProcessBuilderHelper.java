@@ -292,7 +292,7 @@ public class ProcessBuilderHelper {
 			System.out.println("Process RTL_433 finished: "+ret);
 
 		} catch (Exception e) {
-			System.out.println("Error calling : "+this.getClass().getName());
+			System.out.println("Error calling: "+this.getClass().getName());
 			System.out.println("Exception at "+this.getClass().getName()+" class: "+e.getMessage());
 		}finally {
 			if(reader!=null) try{ reader.close(); }catch (Exception e) {e.printStackTrace();}
@@ -440,6 +440,41 @@ public class ProcessBuilderHelper {
 	}
 
 
+	private void transmitWithoutRtl433(String pressureJsonFilePath) {
+		
+		String pressureValue = "...";
+		Double pressureDbl = null; 
+		String pressureJsonStr = null;
+		File pressureFile = new File(pressureJsonFilePath);
+		if(pressureFile!=null && pressureFile.exists() && pressureFile.isFile()) {
+			try {
+				pressureJsonStr = BasicHelper.getInstance().readTextFileToString(pressureFile);
+				gson = new Gson();
+				PressureEntity pressureEntity = gson.fromJson(pressureJsonStr, PressureEntity.class);
+				pressureDbl = pressureEntity.getPressure();
+				pressureEntity.setPressure(pressureDbl/10);
+				pressureValue = String.format("%05d" , pressureEntity.getPressure().intValue());
+			}catch (Exception e) {
+				System.out.println("Exception: "+e.getMessage()+ " | pressureFile.getAbsolutePath(): "+pressureFile.getAbsolutePath()+" | pressureJsonStr: "+pressureJsonStr+" | pressureDbl: "+pressureDbl);
+			}
+		}else System.out.println("No pressure json file found at: "+pressureFile.getAbsolutePath());
+		
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		int calMinute = cal.get(Calendar.MINUTE);
+		cal.add(Calendar.HOUR_OF_DAY, tz);
+		zuluCalHour = cal.get(Calendar.HOUR_OF_DAY);
+		String weather_data = (
+				"@"+String.format("%02d" , cal.get(Calendar.DAY_OF_MONTH))
+				+String.format("%02d" , zuluCalHour)
+				+String.format("%02d" , calMinute)
+				+"z"+toString(latitude, longitude)
+				+"b"+pressureValue
+				+stationName.substring(0, stationName.length() >= 36 ? 36: stationName.length()));
+		sendPacket(destination, weather_data, digiPath);
+	}
+	
 
 	private void logToDisk(WeatherStationDataEntity weatherStationDataEntity) throws IOException {
 		logFile = new File("/tmp/latest.data");
