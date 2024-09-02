@@ -131,16 +131,16 @@ public class App {
 					ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(configEntity);
 					int usbResetTries = 0;
 					boolean isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
-					while(!isRtlDeviceFine && usbResetTries <= Constants.USB_REST_TRIES && !isByParameters) {
-
-						System.out.println("Trying to reset usb device, try: "+usbResetTries);
-						processBuilderHelper.rtlResetUsb();
-						usbResetTries++;
-						Thread.sleep(10000);
-						isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
-						System.out.println("isRtlDeviceFine: "+isRtlDeviceFine);
-
-					}
+//					while(!isRtlDeviceFine && usbResetTries <= Constants.USB_REST_TRIES && !isByParameters) {
+//
+//						System.out.println("Trying to reset usb device, try: "+usbResetTries);
+//						processBuilderHelper.rtlResetUsb();
+//						usbResetTries++;
+//						Thread.sleep(10000);
+//						isRtlDeviceFine = processBuilderHelper.rtlTestCaller();
+//						System.out.println("isRtlDeviceFine: "+isRtlDeviceFine);
+//
+//					}
 
 					if(isRtlDeviceFine || isByParameters){
 						try {
