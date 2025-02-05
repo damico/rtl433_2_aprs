@@ -334,7 +334,7 @@ public class ProcessBuilderHelper {
 					gson = new Gson();
 					PressureEntity pressureEntity = gson.fromJson(pressureJsonStr, PressureEntity.class);
 					pressureDbl = pressureEntity.getPressure();
-					pressureEntity.setPressure((pressureDbl/10)*1.33);
+					pressureEntity.setPressure(pressureDbl/10);
 					pressureValue = String.format("%05d" , pressureEntity.getPressure().intValue());
 				}catch (Exception e) {
 					System.out.println("Exception: "+e.getMessage()+ " | pressureFile.getAbsolutePath(): "+pressureFile.getAbsolutePath()+" | pressureJsonStr: "+pressureJsonStr+" | pressureDbl: "+pressureDbl);
