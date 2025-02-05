@@ -1,0 +1,10 @@
+[Unit]
+Description=rtl433_2_aprs service
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/java -jar /opt/rtl433_2_aprs/target/rtl433toaprs-0.0.1-SNAPSHOT-jar-with-dependencies.jar /opt/rtl433_2_aprs/dist/config.json
+
+[Install]
+WantedBy=multi-user.target
